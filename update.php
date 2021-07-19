@@ -37,14 +37,14 @@ function update_events() {
         return in_array($val['id'], $ids);
     });
     foreach ($updated_events as $event) {
-        $row = $rows[array_search($event['id'], $ids)]; # ids array is in same order as row, and so the indices are the same, thus we can get a row item by id.
+        $row = $rows[array_search($event['id'], $ids)]; // ids array is in same order as row, and so the indices are the same, thus we can get a row item by id.
         $updated_data = create_updated_data($event);
         foreach ($updated_data as $key => $updated_value) {
             // Very fun way to create a query to only update changed values
             if ($row[$key] != $updated_value) {
                 $result = $mysql->query("
                     UPDATE
-                        old_events
+                        events
                     SET
                         $key = $updated_value
                     WHERE
