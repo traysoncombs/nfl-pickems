@@ -56,19 +56,23 @@
     </style>
   </head>
   <body>
-    <div class="grid-container">
-      <div class="grid-x align-center">
-        <div class="cell large-2 small-4 medium-2">
-          <img onclick="location.href='/'" class="img-link" src="img/NFL.png" width="100%"></img>
+    <div class="grid-container full">
+      <div class="title-bar grid-x align-justify">
+        <div class="cell small-5 medium-4 large-3">
+          <nav>
+            <ul style="margin-bottom:0px" class="breadcrumbs">
+              <li style="font-size:1em;"><a href="/">Home</a></li>
+              <li style="color:white; font-size:1em;">Picks</li>
+            </ul>
+          </nav>
         </div>
-      </div>
-      <div class="grid-x align-center">
-        <div class="cell large-4 small-4 medium-4">
-          <label class="text-center">Choose
-            <select>
+        <div class="cell small-7 medium-6 large-3 align-right grid-x">
+          <div class="input-group" style="margin-bottom: 0px;">
+            <span style="font-size: 0.9em;" class=" input-group-label">Choose</span>
+            <select class="input-group-field" style="margin-bottom:0px">
               <option value=""></option>
             </select>
-          </label>
+          </div>
         </div>
       </div>
     </div>
