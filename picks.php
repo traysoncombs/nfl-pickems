@@ -1,4 +1,5 @@
 <?php
+session_start();
 require 'config/config.php';
 $result = $mysql->query("SELECT username FROM users");
 $users = array_column($result->fetch_all(MYSQLI_ASSOC), "username");
@@ -23,53 +24,10 @@ if (isset($_GET['name'])) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.6.3/dist/css/foundation.min.css" integrity="sha256-ogmFxjqiTMnZhxCqVmcqTvjfe1Y/ec4WaRj/aQPvn+I=" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/foundation-sites@6.6.3/dist/js/foundation.min.js" integrity="sha256-pRF3zifJRA9jXGv++b06qwtSqX1byFQOLjqa2PTEb2o=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <style>
-      body, html {
-        height: 100%;
-      }
-
-      @font-face {
-          font-family: "traffic";
-          src: url('css/font/traffic.ttf') format('truetype');
-      }
-
-      body {
-        background: url('img/stadium.jpg') no-repeat bottom fixed;
-        -webkit-background-size: cover;
-        -moz-background-size: cover;
-        -o-background-size: cover;
-        background-size: cover;
-        z-index: 0;
-        width: 100% !important;
-        height: 100% !important;
-      }
-
-      .title {
-        font-size: 15vh;
-        font-family: "traffic";
-        letter-spacing: 0.05em;
-        color: white;
-        text-shadow: 0 0 3px #FF0000, 0 0 5px #0000FF;
-      }
-
-      @media only screen and (max-width:600px){
-        .button-text {
-          font-size: 1.1em !important;
-        }
-      }
-
-      @media only screen and (min-width:601px){
-        .button-text {
-          font-size: 1.6em !important;
-        }
-      }
-      
-      select:invalid {
-        color: gray; 
-      }
-    </style>
+    <link rel="stylesheet" href="css/styles/custom.css"></link>
     <script>
       $(document).ready(function(){
+        $(document).foundation();
         $('#name-select').change(function(){
           document.location.href = "?name=" + $("#name-select").val();
         });
@@ -92,29 +50,33 @@ if (isset($_GET['name'])) {
             <span style="font-size: 0.9em;" class="input-group-label">Choose</span>
             <select id="name-select" class="input-group-field" style="margin-bottom:0px" required>
               <option class="" value="" disabled selected hidden>Choose name</option>
-              <?php 
+              <?php
                 foreach ($users as $user) {
                   $selected = "";
                   if (isset($name))
                     $selected = $user == $name ? 'selected' : '';
                   echo "<option value='$user' $selected>$user</option>";
-                } 
+                }
               ?>
             </select>
           </div>
         </div>
       </div>
-      <div class="grid-x align-center">
+      <div style="margin-top:8px;" class="grid-x align-spaced align-left">
         <?php
           if (isset($weeks)) {
             foreach ($weeks as $week) {
               echo "
-                <div class='card'>
-                  <div class='card-divider'>
-                    week $week picks
-                  </div>
-                  <div class='card-section'>
-                    view/edit
+                <div class='cell grid-margin-x large-2 medium-3 small-5'>
+                  <div class='card text-center'>
+                    <div class='card-divider align-center'>
+                      Week $week picks
+                    </div>
+                    <div class='card-section'>
+                      <a href='/' class='button secondary'>
+                        view/edit
+                      </a>
+                    </div>
                   </div>
                 </div>
               ";

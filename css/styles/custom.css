@@ -1,0 +1,81 @@
+body, html {
+  height: 100%;
+}
+
+@font-face {
+    font-family: "traffic";
+    src: url('/css/font/traffic.ttf') format('truetype');
+}
+
+body {
+  background: url('/img/stadium.jpg') no-repeat bottom fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  z-index: 0;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.title {
+  font-size: 15vh;
+  font-family: "traffic";
+  letter-spacing: 0.05em;
+  color: white;
+  text-shadow: 0 0 3px #FF0000, 0 0 5px #0000FF;
+}
+
+@media only screen and (max-width:600px){
+  .button-text {
+    font-size: 1.1em !important;
+  }
+}
+
+@media only screen and (min-width:601px){
+  .button-text {
+    font-size: 1.6em !important;
+  }
+}
+
+.button-border {
+  border: 2px solid black;
+}
+
+select:invalid {
+  color: gray;
+}
+
+@media only screen and (max-width:600px){
+  .mobile-modal {
+    width: 90%;
+    min-height: 160px;
+    height: 50%;
+    margin: 0;
+    padding: 0;
+    border-radius: 0.75rem;
+    position: absolute;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+        -ms-transform: translateX(-50%);
+            transform: translateX(-50%);
+  }
+}
+
+@media only screen and (max-width:600px){
+  .mobile-modal-inner {
+    padding: 0.5rem 0.5rem 1.5rem;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-direction: column;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    -webkit-align-items: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-justify-content: space-between;
+        -ms-flex-pack: justify;
+            justify-content: space-between;
+  }
+}
