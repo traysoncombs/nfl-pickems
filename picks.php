@@ -1,3 +1,18 @@
+<?php
+require 'config/config.php';
+$result = $mysql->query("SELECT username FROM users");
+$users = array_column($result->fetch_all(MYSQLI_ASSOC), "username");
+if (isset($_GET['name'])) {
+  $name = $_GET['name'];
+  $stmt = $mysql->prepare('SELECT DISTINCT week FROM user_entries WHERE user_id = (SELECT user_id FROM users WHERE username = ?)');
+  $stmt->bind_param('s', $name);
+  $stmt->execute();
+  $result = $stmt->get_result();
+  $rows = $result->fetch_all(MYSQLI_ASSOC);
+  $weeks = array_column($rows, 'week');
+}
+?>
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -48,12 +63,18 @@
           font-size: 1.6em !important;
         }
       }
-
-      .img-link:hover {
-        opacity: 0.7;
-        cursor: pointer;
+      
+      select:invalid {
+        color: gray; 
       }
     </style>
+    <script>
+      $(document).ready(function(){
+        $('#name-select').change(function(){
+          document.location.href = "?name=" + $("#name-select").val();
+        });
+      });
+    </script>
   </head>
   <body>
     <div class="grid-container full">
@@ -68,12 +89,38 @@
         </div>
         <div class="cell small-7 medium-6 large-3 align-right grid-x">
           <div class="input-group" style="margin-bottom: 0px;">
-            <span style="font-size: 0.9em;" class=" input-group-label">Choose</span>
-            <select class="input-group-field" style="margin-bottom:0px">
-              <option value=""></option>
+            <span style="font-size: 0.9em;" class="input-group-label">Choose</span>
+            <select id="name-select" class="input-group-field" style="margin-bottom:0px" required>
+              <option class="" value="" disabled selected hidden>Choose name</option>
+              <?php 
+                foreach ($users as $user) {
+                  $selected = "";
+                  if (isset($name))
+                    $selected = $user == $name ? 'selected' : '';
+                  echo "<option value='$user' $selected>$user</option>";
+                } 
+              ?>
             </select>
           </div>
         </div>
+      </div>
+      <div class="grid-x align-center">
+        <?php
+          if (isset($weeks)) {
+            foreach ($weeks as $week) {
+              echo "
+                <div class='card'>
+                  <div class='card-divider'>
+                    week $week picks
+                  </div>
+                  <div class='card-section'>
+                    view/edit
+                  </div>
+                </div>
+              ";
+            }
+          }
+        ?>
       </div>
     </div>
   </body>
