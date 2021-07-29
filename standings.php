@@ -1,6 +1,15 @@
 <?php
-
-
+require 'config/config.php';
+$result = $mysql->query("SELECT P.week, U.username, SUM(P.score) FROM point_additives P INNER JOIN users U ON P.user_id = U.user_id GROUP BY P.week, P.user_id;");
+if ($result){
+  $rows = $result->fetch_all(MYSQLI_ASSOC);
+  print_r($rows);
+  $leaderboard = array();
+  foreach ($rows as $row) {
+    // array structure is as followes array(week => array(user_id => score, user_id => score), week => array(user_id => score))
+    $leaderboard[$row['week']][$row['username']] = $row['SUM(P.score)']; // Yeah good luck understanding this in two weeks lol
+  }
+}
 ?>
 
 <!DOCTYPE html>
@@ -33,9 +42,32 @@
           </nav>
         </div>
       </div>
-      <div class="table-scroll">
-        <table>
-        </table>
+      <div class="grid-x">
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <?php foreach (array_keys($leaderboard) as $week) { ?>
+                  <th>Week <?= $week ?></th>
+                <?php } ?>
+              </tr>
+              <th>Total</th>
+              <th>Weeks Won</th>
+            </thead>
+            <tbody>
+              <?php
+                foreach ($leaderboard as $week_score){
+                  echo "
+                  <tr>
+                    <td>${week_score}</td>
+                  </tr>";
+                }
+
+              ?>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </body>
