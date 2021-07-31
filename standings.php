@@ -1,13 +1,15 @@
 <?php
 require 'config/config.php';
-$result = $mysql->query("SELECT P.week, U.username, SUM(P.score) FROM point_additives P INNER JOIN users U ON P.user_id = U.user_id GROUP BY P.week, P.user_id;");
+$result = $mysql->query("SELECT P.week, U.username, SUM(P.score) FROM point_additives P INNER JOIN users U ON P.user_id = U.user_id GROUP BY P.week, P.user_id ORDER BY P.week;");
 if ($result){
   $rows = $result->fetch_all(MYSQLI_ASSOC);
-  print_r($rows);
-  $leaderboard = array();
+  $leaderboard = [];
+  $weeks = [];
   foreach ($rows as $row) {
-    // array structure is as followes array(week => array(user_id => score, user_id => score), week => array(user_id => score))
-    $leaderboard[$row['week']][$row['username']] = $row['SUM(P.score)']; // Yeah good luck understanding this in two weeks lol
+    if (!in_array($row['week'], $weeks)) array_push($weeks,$row['week']);
+    // array structure is as followes array(username => array(week => week, score => score))
+    if (!isset($leaderboard[$row['username']])) $leaderboard[$row['username']] = [];
+    array_push($leaderboard[$row['username']], array('week' => $row['week'], 'score' => $row['SUM(P.score)'])); // Yeah good luck understanding this in two weeks lol
   }
 }
 ?>
@@ -26,7 +28,6 @@ if ($result){
     <script>
       $(document).ready(function(){
         $(document).foundation();
-
       });
     </script>
   </head>
@@ -42,32 +43,34 @@ if ($result){
           </nav>
         </div>
       </div>
-      <div class="grid-x">
-        <div class="table-scroll">
-          <table>
+      <div class="grid-x align-center">
+      <div class="table-scroll">
+          <table class="">
             <thead>
               <tr>
                 <th>Name</th>
-                <?php foreach (array_keys($leaderboard) as $week) { ?>
+                <?php foreach ($weeks as $week) { ?>
                   <th>Week <?= $week ?></th>
                 <?php } ?>
+                <th>Total</th>
+                <th>Weeks Won</th>
               </tr>
-              <th>Total</th>
-              <th>Weeks Won</th>
             </thead>
             <tbody>
               <?php
-                foreach ($leaderboard as $week_score){
-                  echo "
-                  <tr>
-                    <td>${week_score}</td>
-                  </tr>";
+                foreach (array_keys($leaderboard) as $username){
+                  echo "<tr><td>$username</td>";
+                  foreach ($leaderboard[$username] as $week) {
+                    echo "<td class='week-${week['week']}'>${week['score']}</td>\n";
+                  }
+                  $total = array_sum(array_column($leaderboard[$username], 'score'));
+                  echo "<td>$total</td>";
+                  echo "</tr>";
                 }
-
               ?>
             </tbody>
           </table>
-        </div>
+      </div>
       </div>
     </div>
   </body>
