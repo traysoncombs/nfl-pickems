@@ -23,30 +23,32 @@
         <span style="font-size: 0.9em;" class="input-group-label">Choose</span>
         <select id="name-select" class="input-group-field" style="margin-bottom:0px" required>
           <option value="" disabled selected hidden>Choose name</option>
-          <option n:foreach="$users as $user" value="{$user}" n:attr="selected: $user == $name">{$user}</option>
+          <option n:foreach="$users as $user" value="{$user}" n:attr="selected: $user == ($_GET['name'] ?? null)">{$user}</option>
         </select>
       </div>
     </div>
   </div>
 {/block}
 {block content}
-  <div style="margin-top:8px;" class="grid-x align-spaced align-left">
+  <div n:if="$weeks" style="margin-top:8px;" class="grid-x align-spaced align-left">
     <div n:foreach="$weeks as $week" class='cell grid-margin-x large-2 medium-3 small-5'>
       <div class='card text-center'>
-        <div n:class="$unpicked && $week == $unpicked ? red, card-divider, align-center">
-          {if $unpicked && $week == $unpicked}
+        <div n:class="$weeks->is_unpicked() ? red, card-divider, align-center">
+          {if $weeks->is_unpicked()}
             Week {$week} - Unpicked
           {else}
             Week {$week} picks
           {/if}
         </div>
         <div class='card-section'>
-          {var $url = $unpicked && $week == $unpicked ? "/select?week=$week" : "/view?username={$_GET['name']}&week=$week"}
+          {var $url = $weeks->is_unpicked() ? "/select?week=$week" : "/view?username={$_GET['name']}&week=$week"}
           <a href="{$url}" class='button secondary'>
-            {if $unpicked && $week == $unpicked}
+            {if $weeks->is_unpicked()}
               Pick
+            {elseif $weeks->logged_in}
+              Edit
             {else}
-              view/edit
+              View
             {/if}
           </a>
         </div>

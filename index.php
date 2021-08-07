@@ -1,6 +1,7 @@
 <?php
 require 'config/config.php';
 require 'modules/classes/leaderboard.php';
+require 'modules/classes/user_picks.php';
 require 'modules/utils/functions.php';
 require_once 'vendor/autoload.php';
 
@@ -12,7 +13,6 @@ $latte->setTempDirectory('tmp');
 use Steampixel\Route;
 
 $current_week = (floor(((time() - 1631163600) / (60 * 60 * 24 * 7))) + 1) >= 1 ?: 1;  // Subtracts the current time from the start of week 1, and divides it by the length of a week to find the current week.
-
 Route::add('/', function(){
   global $latte, $current_week;
   $latte->render('templates/index.latte', ['loggedIn' => $_SESSION['loggedIn'] ?? false]);
@@ -29,23 +29,11 @@ Route::add('/picks', function(){
   $result = $mysql->query("SELECT username FROM users");
   $users = array_column($result->fetch_all(MYSQLI_ASSOC), "username");
   if (isset($_GET['name'])) {
-    $name = $_GET['name'];
-    $stmt = $mysql->prepare('SELECT DISTINCT week FROM user_entries WHERE user_id = (SELECT user_id FROM users WHERE username = ?)');
-    $stmt->bind_param('s', $name);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $rows = $result->fetch_all(MYSQLI_ASSOC);
-    $weeks = array_column($rows, 'week');
-    if ((($_SESSION['username'] ?? null) == $_GET['name']) && (end($weeks) < $current_week)){
-      array_push($weeks, $current_week);
-      $unpicked = $current_week;
-    }
+    $picks = new user_picks($mysql, $_GET['name'], $current_week);
   }
   $params = [
     'users' => $users,
-    'name' => $name ?? null,
-    'weeks' => $weeks ?? null,
-    'unpicked' => $unpicked ?? null
+    'weeks' => $picks ?? null
   ];
   $latte->render("templates/picks.latte", $params);
 });
