@@ -1,0 +1,6 @@
+{
+    "require": {
+        "latte/latte": "^2.10",
+        "steampixel/simple-php-router": "^0.7.0"
+    }
+}

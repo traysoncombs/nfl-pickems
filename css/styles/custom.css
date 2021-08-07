@@ -7,6 +7,14 @@ body, html {
     src: url('/css/font/traffic.ttf') format('truetype');
 }
 
+.green {
+  color: Green;
+}
+
+.red {
+  color: Red;
+}
+
 body {
   background: url('/img/stadium.jpg') no-repeat bottom fixed;
   -webkit-background-size: cover;

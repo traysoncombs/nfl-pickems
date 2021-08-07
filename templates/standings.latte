@@ -1,0 +1,43 @@
+{layout 'layout.latte'}
+{block content}
+  <div class="title-bar grid-x align-justify">
+    <div class="cell small-5 medium-4 large-3">
+      <nav>
+        <ul style="margin-bottom:0px" class="breadcrumbs">
+          <li style="font-size:1em;"><a href="/">Home</a></li>
+          <li style="color:white; font-size:1em;">Standings</li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+  <div class="grid-x align-center">
+    <div style="margin-top: 8px;" class="cell large-5 medium-6 small-8 table-scroll">
+      <table style="border: 1.5px solid black;">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th n:foreach="$leaderboard->get_weeks() as $week">Week {$week}</th>
+            <th>Total</th>
+            <th>Weeks Won</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr n:foreach="$leaderboard->get_usernames() as $username">
+            <td>{$username}
+              <span n:class="$leaderboard->get_money($username) >= 0 ? green : red">
+                {$leaderboard->get_money($username) >= 0 ? '+' : '-'}${$leaderboard->get_money($username) >= 0 ? $leaderboard->get_money($username) : $leaderboard->get_money($username)*-1}
+              </span>
+            </td>
+            <td n:foreach="$leaderboard->get_weeks() as $week">
+              <b n:tag-if="$leaderboard->get_winner($week) == $username">
+                {$leaderboard->get_score($username, $week)}
+              </b>
+            </td>
+            <td>{$leaderboard->sum_score($username)}</td>
+            <td>{$leaderboard->count_wins($username)}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+{/block}

@@ -1,0 +1,56 @@
+{layout 'layout.latte'}
+{block js}
+  <script>
+    $(document).ready(function(){
+      $('#name-select').change(function(){
+        document.location.href = "?name=" + $("#name-select").val();
+      });
+    });
+  </script>
+{/block}
+{block header}
+  <div class="title-bar grid-x align-justify">
+    <div class="cell small-5 medium-4 large-3">
+      <nav>
+        <ul style="margin-bottom:0px" class="breadcrumbs">
+          <li style="font-size:1em;"><a href="/">Home</a></li>
+          <li style="color:white; font-size:1em;">Picks</li>
+        </ul>
+      </nav>
+    </div>
+    <div class="cell small-7 medium-6 large-3 align-right grid-x">
+      <div class="input-group" style="margin-bottom: 0px;">
+        <span style="font-size: 0.9em;" class="input-group-label">Choose</span>
+        <select id="name-select" class="input-group-field" style="margin-bottom:0px" required>
+          <option value="" disabled selected hidden>Choose name</option>
+          <option n:foreach="$users as $user" value="{$user}" n:attr="selected: $user == $name">{$user}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+{/block}
+{block content}
+  <div style="margin-top:8px;" class="grid-x align-spaced align-left">
+    <div n:foreach="$weeks as $week" class='cell grid-margin-x large-2 medium-3 small-5'>
+      <div class='card text-center'>
+        <div n:class="$unpicked && $week == $unpicked ? red, card-divider, align-center">
+          {if $unpicked && $week == $unpicked}
+            Week {$week} - Unpicked
+          {else}
+            Week {$week} picks
+          {/if}
+        </div>
+        <div class='card-section'>
+          {var $url = $unpicked && $week == $unpicked ? "/select?week=$week" : "/view?username={$_GET['name']}&week=$week"}
+          <a href="{$url}" class='button secondary'>
+            {if $unpicked && $week == $unpicked}
+              Pick
+            {else}
+              view/edit
+            {/if}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+{/block}
