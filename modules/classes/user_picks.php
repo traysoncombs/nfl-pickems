@@ -1,6 +1,7 @@
 <?php
+// Iterator that stores the weeks a user has picked.
 
-class user_picks implements Iterator {
+class UserPicks implements Iterator {
   private $position = 0;
   private $username;
   public $logged_in;
@@ -12,11 +13,11 @@ class user_picks implements Iterator {
     $this->username = $username;
     $this->logged_in = ($username == ($_SESSION['username'] ?? null));
     $this->mysql = $mysql;
-
-    $stmt = $mysql->prepare('SELECT DISTINCT week FROM user_entries WHERE user_id = (SELECT user_id FROM users WHERE username = ?)');
-    $stmt->bind_param('s', $username);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    $result = prepared_statement(
+      'SELECT DISTINCT week FROM user_entries WHERE user_id = (SELECT user_id FROM users WHERE username = ?)',
+      's',
+      [$username]
+    );
     $rows = $result->fetch_all(MYSQLI_ASSOC);
     $this->weeks = array_column($rows, 'week');
 

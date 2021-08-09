@@ -29,7 +29,7 @@ Route::add('/picks', function(){
   $result = $mysql->query("SELECT username FROM users");
   $users = array_column($result->fetch_all(MYSQLI_ASSOC), "username");
   if (isset($_GET['name'])) {
-    $picks = new user_picks($mysql, $_GET['name'], $current_week);
+    $picks = new UserPicks($mysql, $_GET['name'], $current_week);
   }
   $params = [
     'users' => $users,
