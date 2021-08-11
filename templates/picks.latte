@@ -5,31 +5,59 @@
       font-weight: bold !important;
     }
 
-    @media only screen and (max-width:600px){
+    @media only screen and (max-width:750){
       .bold {
-        font-size: 1.1em !important;
+        font-size: 0.9em !important;
       }
     }
 
-    @media only screen and (min-width:601px){
+    @media only screen and (min-width:751px){
       .bold {
         font-size: 1.6em !important;
       }
     }
 
     .spaced-p {
-      margin:0px 2px 0px 2px;
+      margin:0px 4px 0px 4px;
       display:inline-block;
     }
+
+    sub {
+      margin:0px;
+      display:inline-block;
+    }
+
   </style>
   <script n:if="$picks->logged_in">
     $(document).ready(function(){
+      $('.team-selector').click(function(clicked){
+        $(this).parent().find('.team-selector').each(function(){
+          if($(this)[0] == clicked.currentTarget && !$(this).attr('selected')) {
+            $(this).attr('selected', '1');
+            $(this).css('background-color', '#'+$(this).attr('data-team-color'));
+            $(this).css('color', 'White');
+          } else if ($(this)[0] != clicked.currentTarget && $(this).attr('selected')) {
+            $(this).removeAttr('selected');
+            $(this).css('background-color', '');
+            $(this).css('color', '');
+          }
+        });
+      });
       var el = document.getElementById('picks');
       Sortable.create(el, {
         swap: true,
+        scroll: true,
+        forceFallback: true,
         swapClass: "highlight",
+        filter: ".disabled",
+        handle: ".handle",
+        scrollSensitivity: 100,
         onMove: function (evt) { // prevents swapping of disabled elements
           return evt.related.className.indexOf('disabled') === -1;
+        },
+        onEnd: function (evt){
+          evt.item.children[2].children[0].innerText = evt.newIndex+1;
+          evt.swapItem.children[2].children[0].innerText = evt.oldIndex+1;
         }
       });
     });
@@ -37,22 +65,24 @@
   {embed 'menu.latte', current_page: 'picks'}{/embed}
 {/block}
 {block content}
-  <div class="grid-x align-center" id="picks">
-    <div class="callout grid-x large-9 medium-9 small-11 align-justify align-middle bold" style="border: 2px solid black; padding: 0px !important;" n:foreach="$picks as $pick">
-      <div class="cell shrink auto">{date('D. g:i a', $pick['start_date'])}</div>
-      <div class="cell grid-x shrink auto align-middle">
-        <div style="background-color: Green; padding:5px" class="cell shrink auto">
+  <div class="grid-x scroll align-center" id="picks">
+    <div class="callout grid-x large-9 medium-9 small-11 align-justify align-middle bold {$pick['locked'] || !$picks->logged_in ? 'secondary' : ''}" style="border: 2px solid black;" n:foreach="$picks as $pick">
+      <div class="cell small-1 auto shrink">{date('D. g:i a', $pick['start_date'])}</div>
+      <div value="{$pick['winner'] ?? ''}" class="cell grid-x shrink auto align-middle">
+        <div n:attr="selected: ($pick['winner_id'] ?? 9999) == $pick['team_one_id'] ? 'selected'" data-team-color="{$pick['team_one_color']}" style="background-color: {($pick['winner_id'] ?? 9999) == $pick['team_one_id'] ? $pick['team_one_color'] : ''}" class="cell shrink auto team-selector">
           <p class="spaced-p">{$pick['team_one_name']}</p>
-          <sub class="spaced-p">({$pick['team_one_wins']}-{$pick['team_one_losses']})</sub>
+          <sub>({$pick['team_one_wins']}-{$pick['team_one_losses']})</sub>
         </div>
         <p class="cell auto shrink spaced-p">@</p>
-        <div style="background-color: Green; padding:5px" class="cell shrink auto">
+        <div n:attr="selected: ($pick['winner_id'] ?? 9999) == $pick['team_two_id'] ? 'selected'" data-team-color="{$pick['team_two_color']}" style="background-color: {($pick['winner_id'] ?? 9999) == $pick['team_two_id'] ? $pick['team_two_color'] : ''}" class="cell shrink auto team-selector">
           <p class="spaced-p">{$pick['team_two_name']}</p>
-          <sub class="spaced-p">({$pick['team_two_wins']}-{$pick['team_two_losses']})</sub>
+          <sub>({$pick['team_two_wins']}-{$pick['team_two_losses']})</sub>
         </div>
-
       </div>
-      <i class="cell shrink auto material-icons align-right" style="padding-right:3px;">open_with</i>
+      <div class="cell grid-x shrink auto align-middle">
+        <p class="spaced-p cell auto shrink">{$pick->confidence ?? $iterator->counter}</p>
+        <p n:if="$picks->logged_in && !$pick['locked']" class="spaced-p cell auto shrink material-icons handle">open_with</p>
+      </div>
     </div>
   </div>
 {/block}

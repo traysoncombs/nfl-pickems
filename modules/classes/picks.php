@@ -22,6 +22,8 @@ class Picks implements Iterator{
         T1.short_display_name as team_one_name,
         T1.wins as team_one_wins,
         T1.losses as team_one_losses,
+        T1.color as team_one_color,
+        T2.color as team_two_color,
         T2.wins as team_two_wins,
         T2.losses as team_two_losses,
         T2.short_display_name as team_two_name,
