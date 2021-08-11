@@ -87,3 +87,7 @@ select:invalid {
             justify-content: space-between;
   }
 }
+
+.highlight {
+  background-color: #7FDBFF !important;
+}

@@ -1,9 +1,15 @@
 <?php
-require 'config/config.php';
-require 'modules/classes/leaderboard.php';
-require 'modules/classes/user_picks.php';
-require 'modules/utils/functions.php';
+require_once 'config/config.php';
+require_once 'modules/utils/functions.php';
 require_once 'vendor/autoload.php';
+
+spl_autoload_register(function ($class_name) {
+  if (file_exists('modules/classes/' . $class_name . '.php')){
+    include 'modules/classes/' . $class_name . '.php';
+    return true;
+  }
+  return false;
+});
 
 session_start();
 
@@ -23,7 +29,7 @@ Route::add('/', function(){
   $latte->render('templates/index.latte', ['login_successful' => login()]);
 }, 'POST');
 
-Route::add('/picks', function(){
+Route::add('/weekly_picks', function(){
   global $latte, $mysql, $current_week;
   if (isset($_SESSION['username']) && !isset($_GET['name'])) $_GET['name'] = $_SESSION['username'];
   $result = $mysql->query("SELECT username FROM users");
@@ -35,7 +41,7 @@ Route::add('/picks', function(){
     'users' => $users,
     'weeks' => $picks ?? null
   ];
-  $latte->render("templates/picks.latte", $params);
+  $latte->render("templates/weekly_picks.latte", $params);
 });
 
 Route::add('/standings', function(){
@@ -47,12 +53,14 @@ Route::add('/standings', function(){
   $latte->render('templates/standings.latte', $params);
 });
 
-Route::add("/view", function(){
-
-});
-
-Route::add("/select", function(){
-
+Route::add("/picks", function(){
+  global $mysql, $latte;
+  if (!isset($_GET['username'], $_GET['week'])){
+    header("location:javascript://history.go(-1)");
+    exit;
+  }
+  $picks = new Picks($mysql, $_GET['week'], $_GET['username']);
+  $latte->render('templates/picks.latte', ['picks' => $picks]);
 });
 
 Route::run('/');

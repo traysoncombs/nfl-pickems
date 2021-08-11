@@ -1,6 +1,6 @@
 <?php
 // Iterator that stores the weeks a user has picked.
-
+require_once 'modules/utils/functions.php';
 class UserPicks implements Iterator {
   private $position = 0;
   private $username;

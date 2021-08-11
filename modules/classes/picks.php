@@ -1,13 +1,18 @@
 <?php
-require '../utils/functions.php';
-class Picks {
+require_once 'modules/utils/functions.php';
+class Picks implements Iterator{
   private $week;
   private $username;
   private $picks;
   private $events = [];
+  public $logged_in;
+  private $position = 0;
+  private $event_keys;
+  public $editing = False;
   public function __construct($mysql, $week, $username){
     $this->username = $username;
     $this->week = $week;
+    $this->logged_in = ($username == ($_SESSION['username'] ?? false));
     $events_result = prepared_statement(
       'SELECT
       	event_id,
@@ -16,7 +21,7 @@ class Picks {
         start_date,
         T1.short_display_name as team_one_name,
         T1.wins as team_one_wins,
-        T1.losses as team_one_id_losses,
+        T1.losses as team_one_losses,
         T2.wins as team_two_wins,
         T2.losses as team_two_losses,
         T2.short_display_name as team_two_name,
@@ -32,11 +37,9 @@ class Picks {
       [$week]
     );
     $this->events = array_manipulate(function($k, $v){  // Modifies array to ensure all games are keyed based off their entry_id.
-      $entry_id = $v['entry_id'];
-      unset($v['entry_id']);
-      return array($entry_id => $v);
+      return array($v['event_id'] => $v);
     }, $events_result->fetch_all(MYSQLI_ASSOC));
-
+    $this->event_keys = array_keys($this->events);
     $entries_result = prepared_statement(
       'SELECT
         entry_id,
@@ -55,6 +58,35 @@ class Picks {
     );
     if($entries_result && $entries_result->num_rows >= 1){  // Executed if user has already selected picks
       $this->picks = $entries_result->fetch_all(MYSQLI_ASSOC);
+      $this->editing = true;
+    }
+  }
+
+  public function rewind() {
+    $this->position = 0;
+  }
+
+  public function current() {
+    if ($this->picks) {
+      return array_merge($this->picks[$this->position], $this->events[$pick['entry_id']]);
+    } else {
+      return $this->events[$this->event_keys[$this->position]];
+    }
+  }
+
+  public function key() {
+    return $this->position;
+  }
+
+  public function next() {
+    ++$this->position;
+  }
+
+  public function valid() {
+    if ($this->picks) {
+      return isset($this->picks[$this->position]);
+    } else {
+      return isset($this->event_keys[$this->position]);
     }
   }
 }

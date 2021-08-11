@@ -28,8 +28,8 @@ function prepared_statement($query, $param_types, $params){
   	$stmt->bind_param($param_types, ...$params) &&
   	$stmt->execute()
   ) return $stmt->get_result();
-  error_log('Failed to execute query: ', $stmt->error);
-  if ($GLOBALS['debug']) var_dump($stmt->error);
+  error_log('Failed to execute query: {$mysql->error}');
+  if ($GLOBALS['debug'] ?? false) var_dump($stmt->error);
   return null;
 }
 

@@ -1,0 +1,51 @@
+{layout 'layout.latte'}
+{block js}
+  <script>
+    $(document).ready(function(){
+      $('#name-select').change(function(){
+        document.location.href = "?name=" + $("#name-select").val();
+      });
+    });
+  </script>
+{/block}
+{block header}
+  {embed 'menu.latte', current_page: 'picks'}
+    {block extra_items}
+      <div class="cell small-7 medium-6 large-3 align-right grid-x">
+        <div class="input-group" style="margin-bottom: 0px;">
+          <span style="font-size: 0.9em;" class="input-group-label">Choose</span>
+          <select id="name-select" class="input-group-field" style="margin-bottom:0px" required>
+            <option value="" disabled selected hidden>Choose name</option>
+            <option n:foreach="$users as $user" value="{$user}" n:attr="selected: $user == ($_GET['name'] ?? null)">{$user}</option>
+          </select>
+        </div>
+      </div>
+    {/block}
+  {/embed}
+{/block}
+{block content}
+  <div n:if="$weeks" style="margin-top:8px;" class="grid-x align-spaced">
+    <div n:foreach="$weeks as $week" class='cell grid-margin-x large-2 medium-3 small-5 '>
+      <div class='card text-center'>
+        <div n:class="$weeks->is_unpicked() ? red, card-divider, align-center">
+          {if $weeks->is_unpicked()}
+            Week {$week} - Unpicked
+          {else}
+            Week {$week} picks
+          {/if}
+        </div>
+        <div class='card-section'>
+          <a href="/picks?username={$_GET['name']}&week={$week}" class='button secondary'>
+            {if $weeks->is_unpicked()}
+              Pick
+            {elseif $weeks->logged_in}
+              Edit
+            {else}
+              View
+            {/if}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+{/block}
