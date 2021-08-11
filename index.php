@@ -2,14 +2,17 @@
 require_once 'config/config.php';
 require_once 'modules/utils/functions.php';
 require_once 'vendor/autoload.php';
+require_once 'modules/classes/Picks.php';
+require_once 'modules/classes/Leaderboard.php';
+require_once 'modules/classes/UserPicks.php';
 
-spl_autoload_register(function ($class_name) {
+/*spl_autoload_register(function ($class_name) {
   if (file_exists('modules/classes/' . $class_name . '.php')){
     include 'modules/classes/' . $class_name . '.php';
     return true;
   }
   return false;
-});
+});*/
 
 session_start();
 
