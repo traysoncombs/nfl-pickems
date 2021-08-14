@@ -1,4 +1,5 @@
 <?php
+require_once 'modules/utils/functions.php';
 
 class Leaderboard {
   private $weeks = [];
@@ -82,10 +83,11 @@ class Leaderboard {
   }
 
   private function break_tie($usernames, $week){ // Player with lowest confidence correct pick for the week wins.
+    $week= intval($week);
     $confs = []; // List of lowest confidence winners by users
     $stmt = $this->mysql->prepare('SELECT MIN(U.confidence) as conf FROM user_entries AS U INNER JOIN events AS E ON E.event_id=U.event_id WHERE E.winner=U.winner_id AND U.user_id=(SELECT user_id FROM users WHERE username=?) AND U.week=?');
     foreach ($usernames as $username){
-      $stmt->bind_param('si', $username, intval($week));
+      $stmt->bind_param('si', $username, $week);
       $stmt->execute();
       $result = $stmt->bind_result($conf);
       $stmt->fetch();
