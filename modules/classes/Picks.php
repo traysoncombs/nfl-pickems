@@ -11,7 +11,7 @@ class Picks implements Iterator{
   public $editing = False;
   public function __construct($mysql, $week, $username){
     $this->username = $username;
-    $this->week = $week;
+    $this->week = intval($week);
     $this->logged_in = ($username == ($_SESSION['username'] ?? false));
     $events_result = prepared_statement(
       'SELECT
@@ -36,7 +36,7 @@ class Picks implements Iterator{
           T2.team_id=events.team_two_id
       WHERE week = ?',
       'i',
-      [$week]
+      [$this->week]
     );
     $this->events = array_manipulate(function($k, $v){  // Modifies array to ensure all games are keyed based off their entry_id.
       return array($v['event_id'] => $v);
@@ -47,7 +47,7 @@ class Picks implements Iterator{
         entry_id,
         event_id,
         confidence,
-        winner_id,
+        winner_id
       FROM
         user_entries
       WHERE
@@ -56,7 +56,7 @@ class Picks implements Iterator{
       ORDER BY
         confidence',
       'is',
-      [$week, $username]
+      [$this->week, $username]
     );
     if($entries_result && $entries_result->num_rows >= 1){  // Executed if user has already selected picks
       $this->picks = $entries_result->fetch_all(MYSQLI_ASSOC);
@@ -70,7 +70,7 @@ class Picks implements Iterator{
 
   public function current() {
     if ($this->picks) {
-      return array_merge($this->picks[$this->position], $this->events[$pick['entry_id']]);
+      return array_merge($this->picks[$this->position], $this->events[$this->picks[$this->position]['event_id']]);
     } else {
       return $this->events[$this->event_keys[$this->position]];
     }

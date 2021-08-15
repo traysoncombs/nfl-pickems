@@ -30,12 +30,45 @@
   </style>
   <script n:if="$picks->logged_in">
     $(document).ready(function(){
+      $(".entry .team-selector").each(function(){
+        if ($(this).attr('selected')){
+          $(this).css('background-color', '#'+$(this).attr('data-team-color'));
+          $(this).css('color', 'White');
+        }
+      });
+      $("#submit_button").click(function(){
+        var entries = []
+        var return_all = false;
+        $(".entry").each(function(){
+          if (!$(this).find(".team_entry").attr("winner")){
+            alert("Make sure all teams have been selected.");
+            return_all = true;
+            return false;
+          } else if ( $(this).hasClass('locked') ) { // dont add locked entries, need server side check for this
+            return;
+          }
+          entries.push(entry = {
+            event_id: $(this).attr("data-event"),
+            winner_id: $(this).find(".team_entry").attr("winner"),
+            confidence: $(this).find('.confidence').text()
+          });
+        });
+        if (return_all) {
+          return false;
+        }
+        $.post('/picks', {"entries": entries, "week": {$_GET['week']}}, function(){
+          alert("success");
+        });
+      });
       $('.team-selector').click(function(clicked){
         $(this).parent().find('.team-selector').each(function(){
           if($(this)[0] == clicked.currentTarget && !$(this).attr('selected')) {
             $(this).attr('selected', '1');
             $(this).css('background-color', '#'+$(this).attr('data-team-color'));
             $(this).css('color', 'White');
+            console.log($(this).parent());
+            var team_id = $(this).attr('data-team');
+            $(this).parent().attr('winner', team_id);
           } else if ($(this)[0] != clicked.currentTarget && $(this).attr('selected')) {
             $(this).removeAttr('selected');
             $(this).css('background-color', '');
@@ -66,23 +99,26 @@
 {/block}
 {block content}
   <div class="grid-x scroll align-center" id="picks">
-    <div class="callout grid-x large-9 medium-9 small-11 align-justify align-middle bold {$pick['locked'] || !$picks->logged_in ? 'secondary' : ''}" style="border: 2px solid black;" n:foreach="$picks as $pick">
+    <div data-event="{$pick['event_id']}" class="entry callout grid-x large-9 medium-9 small-11 align-justify align-middle bold {$pick['locked'] || !$picks->logged_in ? 'secondary locked' : ''}" style="border: 2px solid black;" n:foreach="$picks as $pick">
       <div class="cell small-1 large-2 medium-2 auto shrink">{date('D. g:i a', $pick['start_date'])}</div>
-      <div value="{$pick['winner'] ?? ''}" class="cell grid-x shrink auto align-middle">
-        <div n:attr="selected: ($pick['winner_id'] ?? 9999) == $pick['team_one_id'] ? 'selected'" data-team-color="{$pick['team_one_color']}" style="background-color: {($pick['winner_id'] ?? 9999) == $pick['team_one_id'] ? $pick['team_one_color'] : ''}" class="cell shrink auto team-selector">
+      <div n:attr="winner: $pick['winner_id'] ?? ''" class="cell grid-x shrink auto align-middle team_entry">
+        <div data-team="{$pick['team_one_id']}" n:attr="selected: ($pick['winner_id'] ?? 9999) == $pick['team_one_id'] ? 'selected'" data-team-color="{$pick['team_one_color']}" class="cell shrink auto team-selector">
           <p class="spaced-p">{$pick['team_one_name']}</p>
           <sub>({$pick['team_one_wins']}-{$pick['team_one_losses']})</sub>
         </div>
         <p class="cell auto shrink spaced-p">@</p>
-        <div n:attr="selected: ($pick['winner_id'] ?? 9999) == $pick['team_two_id'] ? 'selected'" data-team-color="{$pick['team_two_color']}" style="background-color: {($pick['winner_id'] ?? 9999) == $pick['team_two_id'] ? $pick['team_two_color'] : ''}" class="cell shrink auto team-selector">
+        <div data-team="{$pick['team_two_id']}" n:attr="selected: ($pick['winner_id'] ?? 9999) == $pick['team_two_id'] ? 'selected'" data-team-color="{$pick['team_two_color']}" class="cell shrink auto team-selector">
           <p class="spaced-p">{$pick['team_two_name']}</p>
           <sub>({$pick['team_two_wins']}-{$pick['team_two_losses']})</sub>
         </div>
       </div>
       <div class="cell grid-x shrink auto align-middle">
-        <p class="spaced-p cell auto shrink">{$pick->confidence ?? $iterator->counter}</p>
+        <p class="confidence spaced-p cell auto shrink">{$pick->confidence ?? $iterator->counter}</p>
         <p n:if="$picks->logged_in && !$pick['locked']" class="spaced-p cell auto shrink material-icons handle">open_with</p>
       </div>
+    </div>
+    <div n:if="$picks->logged_in" class="cell large-9 medium-9 small-11 align-center">
+      <button id="submit_button" class="button expanded" type="submit">Submit</button>
     </div>
   </div>
 {/block}

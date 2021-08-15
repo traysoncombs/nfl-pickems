@@ -10,8 +10,10 @@ function login() {
     $stmt->bind_param('ss', $username, $password_hash);
     $stmt->execute();
     $stmt->store_result();
-    if ($stmt->num_rows == 1) {
+    $stmt->bind_result($user_id);
+    if ($stmt->num_rows == 1 && $stmt->fetch()) {
       $_SESSION['username'] = $username;
+      $_SESSION['user_id'] = $user_id;
       $_SESSION['loggedIn'] = true;
       return true;
     }
@@ -26,10 +28,11 @@ function prepared_statement($query, $param_types, $params){
   if (
   	$stmt &&
   	$stmt->bind_param($param_types, ...$params) &&
-  	$stmt->execute()
+  	$stmt->execute() &&
+    !$mysql->error
   ) return $stmt->get_result();
   error_log('Failed to execute query: {$mysql->error}');
-  if ($GLOBALS['debug'] ?? false) var_dump($stmt->error);
+  if ($GLOBALS['debug'] ?? false) var_dump($mysql->error);
   return null;
 }
 

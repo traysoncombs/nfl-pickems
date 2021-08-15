@@ -66,5 +66,37 @@ Route::add("/picks", function(){
   $latte->render('templates/picks.latte', ['picks' => $picks]);
 });
 
+Route::add("/picks", function(){ // need server side check to prevent locked entrties from being edited.
+  global $mysql;
+  if(!isset($_POST['entries']) || !isset($_SESSION['loggedIn'])){
+    return false;
+  }
+  $entries = $_POST['entries'];
+  $stmt = $mysql->prepare("
+    INSERT INTO
+      user_entries (confidence, event_id, user_id, week, winner_id)
+    VALUES
+      (?, ?, ?, ?, ?)
+    ON DUPLICATE KEY UPDATE
+      confidence = VALUES(confidence), winner_id = VALUES(winner_id)
+  ");
+  foreach ($entries as $entry){
+    if (
+      $stmt &&
+      $stmt->bind_param('iiiii', $entry['confidence'], $entry['event_id'], $_SESSION['user_id'], $_POST['week'], $entry['winner_id']) &&
+      $stmt->execute()
+    ) {
+      continue;
+    } else {
+      error_log("error updating user picks: {$mysql->error}");
+      if ($_GLOBALS['debug'] ?? false) var_dump($mysql);
+      http_response_code(400);
+      return false;
+    }
+  }
+  http_response_code(200);
+  return true;
+}, 'POST');
+
 Route::run('/');
 ?>
