@@ -56,9 +56,32 @@
         if (return_all) {
           return false;
         }
-        $.post('/picks', {"entries": entries, "week": {$_GET['week']}}, function(){
-          alert("success");
-        });
+        $.ajax(
+          url: '/picks',
+          method: 'POST',
+          data: {
+            "entries": entries, 
+            "week": {$_GET['week']}}
+          },
+          statusCode: {
+            400: function(){
+              $("<div class='callout success text-center' data-closeable>
+                  <h5>Error submitting picks</h5>
+                  <button class='close-button' aria-label='Dismiss alert' type='button' data-close>
+                    <span aria-hidden='true'>&times;</span>
+                  </button>
+                </div>").appendTo("body");
+            },
+            200: function(){
+               $("<div class='callout success text-center' data-closeable>
+                  <h5>Submission Successful!</h5>
+                  <button class='close-button' aria-label='Dismiss alert' type='button' data-close>
+                    <span aria-hidden='true'>&times;</span>
+                  </button>
+                </div>").appendTo("body");
+            }
+          }
+        );
       });
       $('.team-selector').click(function(clicked){
         $(this).parent().find('.team-selector').each(function(){
@@ -84,7 +107,7 @@
         swapClass: "highlight",
         filter: ".disabled",
         handle: ".handle",
-        scrollSensitivity: 100,
+        scrollSensitivity: 150,
         onMove: function (evt) { // prevents swapping of disabled elements
           return evt.related.className.indexOf('disabled') === -1;
         },
