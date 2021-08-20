@@ -3,21 +3,8 @@
   <style>
     .bold {
       font-weight: bold !important;
-	  font-size: clamp(0.8em, 0.6rem + 0.1vw, 1.5rem);
-
+      font-size: clamp(0.8rem, 0.3rem + 1.6vw, 1.2rem) !important;
     }
-
-    /*@media only screen and (max-width:750){
-      .bold {
-        font-size: 0.9em !important;
-      }
-    }
-
-    @media only screen and (min-width:751px){
-      .bold {
-        font-size: 1.6em !important;
-      }
-    }*/
 
     .spaced-p {
       margin:0px 4px 0px 4px;
@@ -95,7 +82,6 @@
             $(this).attr('selected', '1');
             $(this).css('background-color', '#'+$(this).attr('data-team-color'));
             $(this).css('color', 'White');
-            console.log($(this).parent());
             var team_id = $(this).attr('data-team');
             $(this).parent().attr('winner', team_id);
           } else if ($(this)[0] != clicked.currentTarget && $(this).attr('selected')) {
@@ -120,8 +106,8 @@
           return evt.related.className.indexOf('disabled') === -1;
         },
         onEnd: function (evt){
-          evt.item.children[2].children[0].innerText = evt.newIndex+1;
-          evt.swapItem.children[2].children[0].innerText = evt.oldIndex+1;
+          evt.item.children[2].children[0].innerText = ((evt.newIndex+1)*16)%17;
+          evt.swapItem.children[2].children[0].innerText = ((evt.oldIndex+1)*16)%17;
         }
       });
     });
@@ -133,19 +119,19 @@
     <div class="grid-x scroll align-center" id="picks">
       <div data-event="{$pick['event_id']}" class="entry callout grid-x large-9 medium-9 small-11 align-justify align-middle bold {$pick['locked'] || !$picks->logged_in ? 'secondary locked' : ''}" style="border: 2px solid black;" n:foreach="$picks as $pick">
         <div class="cell small-1 large-2 medium-2 auto shrink">{date('D. g:i a', $pick['start_date'])}</div>
-        <div style="height: 100%" n:attr="winner: $pick['winner_id'] ?? ''" class="cell grid-x shrink auto align-middle team_entry">
-          <div data-team="{$pick['team_one_id']}" n:attr="selected: ($pick['winner_id'] ?? 9999) == $pick['team_one_id'] ? 'selected'" data-team-color="{$pick['team_one_color']}" class="cell shrink auto team-selector pointy-hover">
-            <p class="spaced-p">{$pick['team_one_name']}</p>
+        <div n:attr="winner: $pick['winner_id'] ?? ''" class="cell grid-x shrink auto align-middle team_entry align-self-stretch">
+          <div data-team="{$pick['team_one_id']}" n:attr="selected: ($pick['winner_id'] ?? 9999) == $pick['team_one_id'] ? 'selected'" data-team-color="{$pick['team_one_color']}" class="cell shrink auto team-selector pointy-hover" >
+            <p class="spaced-p align-middle">{$pick['team_one_name']}</p>
             <sub>({$pick['team_one_wins']}-{$pick['team_one_losses']})</sub>
           </div>
           <p class="cell auto shrink spaced-p">@</p>
-          <div data-team="{$pick['team_two_id']}" n:attr="selected: ($pick['winner_id'] ?? 9999) == $pick['team_two_id'] ? 'selected'" data-team-color="{$pick['team_two_color']}" class="cell shrink auto team-selector pointy-hover">
+          <div data-team="{$pick['team_two_id']}" n:attr="selected: ($pick['winner_id'] ?? 9999) == $pick['team_two_id'] ? 'selected'" data-team-color="{$pick['team_two_color']}" class="cell shrink auto team-selector pointy-hover" >
             <p class="spaced-p">{$pick['team_two_name']}</p>
             <sub>({$pick['team_two_wins']}-{$pick['team_two_losses']})</sub>
           </div>
         </div>
         <div class="cell grid-x shrink auto align-middle">
-          <p class="confidence spaced-p cell auto shrink">{$pick->confidence ?? $iterator->counter}</p>
+          <p class="confidence spaced-p cell auto shrink">{$pick['confidence']?? ($iterator->counter*16)%17}</p>
           <p n:if="$picks->logged_in && !$pick['locked']" class="spaced-p cell auto shrink material-icons handle grabby-hover">open_with</p>
         </div>
       </div>

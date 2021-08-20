@@ -1,0 +1,24 @@
+{layout 'layout.latte'}
+{block header}
+{embed 'menu.latte', current_page: 'register'}{/embed}
+{/block}
+{block content}
+  <div class="grid-x align-center align-middle">
+    <div class="grid-x grid-padding-x cell large-4 medium-5 small-11 card" style="margin-top: 10px;">
+      <div class="card-divider">
+        Register
+      </div>
+      <form class="cell grid-x align-center" method="POST" action="/register" style="margin-top: 10px;">
+        <div class="cell large-9 medium-9">
+          <input class="" type="text" name="username" placeholder="Username">
+        </div>
+        <div class="cell large-9 medium-9">
+          <input class="" type="password" name="password" placeholder="Password">
+        </div>
+        <div class="cell large-9 medium-9">
+          <input type="submit" class="button expanded" value="Submit">
+        </div>
+      </form>
+    </div>
+  </div>
+{/block}

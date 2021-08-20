@@ -54,7 +54,7 @@ class Picks implements Iterator{
         week = ? AND
         user_id = (SELECT user_id FROM users WHERE username = ?)
       ORDER BY
-        confidence',
+        confidence DESC',
       'is',
       [$this->week, $username]
     );

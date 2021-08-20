@@ -1,14 +1,14 @@
 {layout 'layout.latte'}
 {block header}
-  <div n:if="isset($login_successful)">
-    <div n:if="$login_successful" class="callout success text-center" data-closable>
-      <h5>Login Success!</h5>
+  <div n:if="isset($show_dialog)">
+    <div n:if="$show_dialog" class="callout success text-center" data-closable>
+      <h5>{$msg}</h5>
       <button class="close-button" aria-label="Dismiss alert" type="button" data-close>
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
-    <div n:if="!$login_successful" class="callout alert text-center" data-closable>
-      <h5>Login Unsuccessful!</h5>
+    <div n:if="!$show_dialog" class="callout alert text-center" data-closable>
+      <h5>{$msg}</h5>
       <button class="close-button" aria-label="Dismiss alert" type="button" data-close>
         <span aria-hidden="true">&times;</span>
       </button>
