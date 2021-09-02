@@ -5,6 +5,7 @@ require_once 'vendor/autoload.php';
 require_once 'modules/classes/Picks.php';
 require_once 'modules/classes/Leaderboard.php';
 require_once 'modules/classes/UserPicks.php';
+require_once 'modules/db/update.php';
 
 /*spl_autoload_register(function ($class_name) {
   if (file_exists('modules/classes/' . $class_name . '.php')){
@@ -20,6 +21,7 @@ $latte = new Latte\Engine;
 $latte->setTempDirectory('tmp');
 
 use Steampixel\Route;
+update_events();
 
 $current_week = (floor(((time() - 1631163600) / (60 * 60 * 24 * 7))) + 1) >= 1 ?: 1;  // Subtracts the current time from the start of week 1, and divides it by the length of a week to find the current week.
 Route::add('/', function(){
