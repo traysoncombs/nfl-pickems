@@ -32,7 +32,7 @@ function prepared_statement($query, $param_types, $params){
     !$mysql->error
   ) return $stmt->get_result();
   error_log('Failed to execute query: {$mysql->error}');
-  if ($GLOBALS['debug'] ?? false) var_dump($mysql->error);
+  if ($GLOBALS['debug'] ?? false) var_dump($mysql);
   return null;
 }
 

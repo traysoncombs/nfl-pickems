@@ -29,7 +29,7 @@ Route::add('/', function(){
 
 Route::add('/', function(){
   global $latte, $mysql;
-  $latte->render('templates/index.latte', ['login_successful' => login()]);
+  $latte->render('templates/index.latte', ['show_dialog' => true, 'msg' => login() ? 'Login Success!' : 'Login Error']);
 }, 'POST');
 
 Route::add('/weekly_picks', function(){
@@ -96,6 +96,36 @@ Route::add("/picks", function(){ // need server side check to prevent locked ent
   }
   http_response_code(200);
   return true;
+}, 'POST');
+
+Route::add('/register', function(){
+  global $latte;
+  $latte->render('templates/register.latte');
+});
+
+Route::add('/', function(){
+  global $latte;
+  $latte->render('templates/register.latte');
+});
+
+Route::add('/register', function(){
+    global $mysql, $latte;
+    if (isset($_POST['username'], $_POST['password'])){
+      $password_hash = hash('sha256', $_POST['password']);
+      $res = prepared_statement(
+        'INSERT INTO
+          users (username, password_hash)
+        VALUES (?, ?)',
+        'ss',
+        [$_POST['username'], $password_hash]
+      );
+      if ($res != null) {
+        $latte->render('templates/index.latte', ['show_dialog' => true, 'msg' => 'Registration Error']);
+      } else {
+        $latte->render('templates/index.latte', ['show_dialog' => true, 'msg' => login() ? 'Registration Successful!' : 'Registration Error']);
+      }
+      unset($_POST['username'], $_POST['password']);
+    }
 }, 'POST');
 
 Route::run('/');
