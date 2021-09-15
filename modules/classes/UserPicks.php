@@ -22,7 +22,7 @@ class UserPicks implements Iterator {
     $this->weeks = array_column($rows, 'week');
 
     if($this->logged_in){
-      $this->unpicked_week = end($this->weeks) < $current_week ? $current_week : null;
+      $this->unpicked_week = end($this->weeks) < $current_week+1 ? $current_week : null;
       array_push($this->weeks, $this->unpicked_week);
     }
   }
