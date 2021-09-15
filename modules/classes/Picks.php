@@ -1,7 +1,7 @@
 <?php
 require_once 'modules/utils/functions.php';
 class Picks implements Iterator{
-  private $week;
+  public $week;
   private $username;
   private $picks;
   private $events = [];
