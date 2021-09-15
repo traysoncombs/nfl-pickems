@@ -74,6 +74,7 @@ Route::add("/picks", function(){ // need server side check to prevent locked ent
     return false;
   }
   $entries = $_POST['entries'];
+  if ($_POST['week'] > $current_week) return;
   $stmt = $mysql->prepare("
     INSERT INTO
       user_entries (confidence, event_id, user_id, week, winner_id)
