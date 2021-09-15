@@ -1,8 +1,5 @@
 <?php
-<<<<<<< HEAD
-=======
 require 'config/config.php';
->>>>>>> dev
 define('UPDATE_INTERVAL', 60 * 5);
 function update_events() {
     global $mysql;
