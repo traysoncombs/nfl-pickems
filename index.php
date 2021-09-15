@@ -65,7 +65,7 @@ Route::add("/picks", function(){
     exit;
   }
   $picks = new Picks($mysql, $_GET['week'], $_GET['username']);
-  $latte->render('templates/picks.latte', ['picks' => $picks]);
+  $latte->render('templates/picks.latte', ['picks' => $picks, 'current_week', $current_week]);
 });
 
 Route::add("/picks", function(){ // need server side check to prevent locked entrties from being edited.
