@@ -65,7 +65,7 @@ Route::add("/picks", function(){
     exit;
   }
   $picks = new Picks($mysql, $_GET['week'], $_GET['username']);
-  $latte->render('templates/picks.latte', ['picks' => $picks]);
+  $latte->render('templates/picks.latte', ['picks' => $picks, 'current_week', $current_week]);
 });
 
 Route::add("/picks", function(){ // need server side check to prevent locked entrties from being edited.
@@ -74,6 +74,7 @@ Route::add("/picks", function(){ // need server side check to prevent locked ent
     return false;
   }
   $entries = $_POST['entries'];
+  if ($_POST['week'] > $current_week) return;
   $stmt = $mysql->prepare("
     INSERT INTO
       user_entries (confidence, event_id, user_id, week, winner_id)
