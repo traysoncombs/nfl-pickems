@@ -44,7 +44,8 @@ Route::add('/weekly_picks', function(){
   }
   $params = [
     'users' => $users,
-    'weeks' => $picks ?? null
+    'weeks' => $picks ?? null,
+    'current_week' => $current_week
   ];
   $latte->render("templates/weekly_picks.latte", $params);
 });
@@ -59,13 +60,13 @@ Route::add('/standings', function(){
 });
 
 Route::add("/picks", function(){
-  global $mysql, $latte;
+  global $mysql, $latte, $current_week;
   if (!isset($_GET['username'], $_GET['week'])){
     header("location:javascript://history.go(-1)");
     exit;
   }
   $picks = new Picks($mysql, $_GET['week'], $_GET['username']);
-  $latte->render('templates/picks.latte', ['picks' => $picks, 'current_week', $current_week]);
+  $latte->render('templates/picks.latte', ['picks' => $picks, 'current_week' => $current_week]);
 });
 
 Route::add("/picks", function(){ // need server side check to prevent locked entrties from being edited.
