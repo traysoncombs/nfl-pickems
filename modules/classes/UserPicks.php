@@ -5,7 +5,7 @@ class UserPicks implements Iterator {
   private $position = 0;
   private $username;
   public $logged_in;
-  public $unpicked_week = 0;
+  public $unpicked_weeks = array();
   public $weeks;
   private $mysql;
 
@@ -22,8 +22,13 @@ class UserPicks implements Iterator {
     $this->weeks = array_column($rows, 'week');
 
     if($this->logged_in){
-      $this->unpicked_week = end($this->weeks) < $current_week+1 ? $current_week : null;
-      array_push($this->weeks, $this->unpicked_week);
+      for ($i = 1; $i <= $current_week+1; $i++){
+        $unpicked_week = end($this->weeks) < $i ? $i : null;
+        if ($unpicked_week) {
+          array_push($this->unpicked_weeks, $unpicked_week);
+          array_push($this->weeks, $unpicked_week);
+        }
+      }
     }
   }
 
@@ -48,7 +53,7 @@ class UserPicks implements Iterator {
     }
 
     public function is_unpicked(){
-      return $this->current() == ($this->unpicked_week ?? null);
+      return in_array($this->current(), $this->unpicked_weeks);
     }
 
 }
