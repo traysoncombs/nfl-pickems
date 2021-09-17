@@ -14,13 +14,12 @@ class UserPicks implements Iterator {
     $this->logged_in = ($username == ($_SESSION['username'] ?? null));
     $this->mysql = $mysql;
     $result = prepared_statement(
-      'SELECT DISTINCT week FROM user_entries WHERE user_id = (SELECT user_id FROM users WHERE username = ?)',
+      'SELECT DISTINCT week FROM user_entries WHERE user_id = (SELECT user_id FROM users WHERE username = ?) ORDER BY week ASC',
       's',
       [$username]
     );
     $rows = $result->fetch_all(MYSQLI_ASSOC);
     $this->weeks = array_column($rows, 'week');
-
     if($this->logged_in){
       $end_of_week = end($this->weeks);
       for ($i = 1; $i <= $current_week+1; $i++){
