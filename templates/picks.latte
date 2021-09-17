@@ -97,13 +97,13 @@
         scroll: true,
         forceFallback: true,
         swapClass: "highlight",
-        filter: ".disabled",
+        filter: ".locked",
         handle: ".handle",
         scrollSensitivity: 100,
         scrollSpeed: 30,
         animation: 150,
         onMove: function (evt) { // prevents swapping of disabled elements
-          return evt.related.className.indexOf('disabled') === -1;
+          return evt.related.className.indexOf('locked') === -1;
         },
         onEnd: function (evt){
           evt.item.children[2].children[0].innerText = ((evt.newIndex+1)*16)%17;
@@ -136,7 +136,7 @@
         </div>
       </div>
     </div>
-    <div n:if="$picks->logged_in" class="cell large-9 medium-9 small-11 align-center disabled">
+    <div n:if="$picks->logged_in" class="cell large-9 medium-9 small-11 align-center locked">
       <button id="submit_button" class="button expanded" type="submit">Submit</button>
     </div>
   </div>
