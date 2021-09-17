@@ -22,8 +22,9 @@ class UserPicks implements Iterator {
     $this->weeks = array_column($rows, 'week');
 
     if($this->logged_in){
+      $end_of_week = end($this->weeks);
       for ($i = 1; $i <= $current_week+1; $i++){
-        $unpicked_week = end($this->weeks) < $i ? $i : null;
+        $unpicked_week = $end_of_week < $i ? $i : null;
         if ($unpicked_week) {
           array_push($this->unpicked_weeks, $unpicked_week);
           array_push($this->weeks, $unpicked_week);
