@@ -27,7 +27,7 @@ class Picks implements Iterator{
         T2.wins as team_two_wins,
         T2.losses as team_two_losses,
         T2.short_display_name as team_two_name,
-        IF(start_date > (SELECT UNIX_TIMESTAMP()), False, False) as locked
+        IF(start_date > (SELECT UNIX_TIMESTAMP()), False, True) as locked
       FROM
          	events
       INNER JOIN teams as T1 ON
