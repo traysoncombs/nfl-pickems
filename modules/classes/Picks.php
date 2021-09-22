@@ -72,7 +72,7 @@ class Picks implements Iterator{
 
   public function current() {
     if ($this->picks) {
-      return array_merge($this->picks[$this->position], $this->events[$this->picks[$this->position]['event_id']]);
+      return array_merge($this->picks[$this->position], $this->events[$this->picks[$this->position]['event']]);
     } else {
       return $this->events[$this->event_keys[$this->position]];
     }
