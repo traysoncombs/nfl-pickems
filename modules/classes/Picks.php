@@ -44,10 +44,12 @@ class Picks implements Iterator{
     $this->event_keys = array_keys($this->events);
     $entries_result = prepared_statement(
       'SELECT
-        entry_id,
-        event_id,
+        entry_id as entry,
+        event_id as event,
         confidence,
-        winner_id
+        winner_id,
+        (SELECT E.completed FROM events E WHERE E.event_id = event) as completed,
+        (SELECT EXISTS(SELECT * FROM point_additives P WHERE P.entry_id = entry)) as correct
       FROM
         user_entries
       WHERE
