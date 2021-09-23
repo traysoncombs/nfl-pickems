@@ -78,7 +78,7 @@ class Leaderboard {
 
   public function get_money($username){
     $won = $this->count_wins($username);
-    $lost = $this->current_week - $won;
+    $lost = ($this->current_week - 1) - $won;
     return ($won*6) - ($lost*3);
   }
 
