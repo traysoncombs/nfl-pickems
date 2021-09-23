@@ -51,8 +51,8 @@ Route::add('/weekly_picks', function(){
 });
 
 Route::add('/standings', function(){
-  global $latte, $mysql;
-  $leaderboard = new Leaderboard($mysql);
+  global $latte, $mysql, $current_week;
+  $leaderboard = new Leaderboard($mysql, $current_week);
   $params = [
     'leaderboard' => $leaderboard
   ];

@@ -8,9 +8,9 @@ class Leaderboard {
   private $usernames = [];
   private $current_week;
   private $mysql;
-  public function __construct($mysql){
+  public function __construct($mysql, $current_week){
     $this->mysql = $mysql;
-    $this->current_week = (floor(((time() - 1631163600) / (60 * 60 * 24 * 7))) + 1) >= 1 ?: 1;
+    $this->current_week = $current_week;
     $result = $mysql->query("SELECT
                               P.week, U.username, SUM(P.score) as total
                             FROM
@@ -44,7 +44,6 @@ class Leaderboard {
         }
       }
       $largest = max(array_values($this->scores[$week]));
-      var_dump($largest);
       $this->week_winners[$week] = array_search($largest, $this->scores[$week]);
     }
   }
@@ -80,9 +79,6 @@ class Leaderboard {
   public function get_money($username){
     $won = $this->count_wins($username);
     $lost = $this->current_week - $won;
-    var_dump($won);
-    var_dump($lost);
-    var_dump($this->current_week);
     return ($won*6) - ($lost*3);
   }
 
