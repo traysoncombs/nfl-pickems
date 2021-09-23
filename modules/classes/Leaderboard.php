@@ -35,7 +35,7 @@ class Leaderboard {
     }
 
     foreach($this->weeks as $week){
-      if (count(array_keys($this->scores[$week]), max($this->scores[$week]))) {
+      if (count(array_keys($this->scores[$week]), max($this->scores[$week]))) { // This entire block is for tie checking, this part specifically checks if their are two of the max scores for the week
         if (array_count_values($this->scores[$week])[max($this->scores[$week])] > 1){
           $names = array_keys($this->scores[$week], max($this->scores[$week]));
           $broken_tie = $this->break_tie($names, $week);
@@ -44,6 +44,7 @@ class Leaderboard {
         }
       }
       $largest = max(array_values($this->scores[$week]));
+      var_dump($largest);
       $this->week_winners[$week] = array_search($largest, $this->scores[$week]);
     }
   }
@@ -79,6 +80,9 @@ class Leaderboard {
   public function get_money($username){
     $won = $this->count_wins($username);
     $lost = $this->current_week - $won;
+    var_dump($won);
+    var_dump($lost);
+    var_dump($this->current_week);
     return ($won*6) - ($lost*3);
   }
 
