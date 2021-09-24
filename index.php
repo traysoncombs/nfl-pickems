@@ -14,7 +14,7 @@ require_once 'modules/db/update.php';
   }
   return false;
 });*/
-
+date_default_timezone_set("America/Chicago");
 session_start();
 
 $latte = new Latte\Engine;
