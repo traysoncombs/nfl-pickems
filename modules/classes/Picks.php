@@ -93,6 +93,10 @@ class Picks implements Iterator{
       return isset($this->event_keys[$this->position]);
     }
   }
+
+  public function count_events() {
+    return count($this->events);
+  }
 }
 
 ?>
