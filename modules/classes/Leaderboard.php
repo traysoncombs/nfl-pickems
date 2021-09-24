@@ -8,9 +8,9 @@ class Leaderboard {
   private $usernames = [];
   private $current_week;
   private $mysql;
-  public function __construct($mysql){
+  public function __construct($mysql, $current_week){
     $this->mysql = $mysql;
-    $this->current_week = (floor(((time() - 1631163600) / (60 * 60 * 24 * 7))) + 1) >= 1 ?: 1;
+    $this->current_week = $current_week;
     $result = $mysql->query("SELECT
                               P.week, U.username, SUM(P.score) as total
                             FROM
@@ -35,7 +35,7 @@ class Leaderboard {
     }
 
     foreach($this->weeks as $week){
-      if (count(array_keys($this->scores[$week]), max($this->scores[$week]))) {
+      if (count(array_keys($this->scores[$week]), max($this->scores[$week]))) { // This entire block is for tie checking, this part specifically checks if their are two of the max scores for the week
         if (array_count_values($this->scores[$week])[max($this->scores[$week])] > 1){
           $names = array_keys($this->scores[$week], max($this->scores[$week]));
           $broken_tie = $this->break_tie($names, $week);
@@ -78,7 +78,7 @@ class Leaderboard {
 
   public function get_money($username){
     $won = $this->count_wins($username);
-    $lost = $this->current_week - $won;
+    $lost = ($this->current_week - 1) - $won;
     return ($won*6) - ($lost*3);
   }
 
