@@ -35,6 +35,7 @@ class Leaderboard {
     }
 
     foreach($this->weeks as $week){
+      if ($week == $this->current_week) continue;
       if (count(array_keys($this->scores[$week]), max($this->scores[$week]))) { // This entire block is for tie checking, this part specifically checks if their are two of the max scores for the week
         if (array_count_values($this->scores[$week])[max($this->scores[$week])] > 1){
           $names = array_keys($this->scores[$week], max($this->scores[$week]));
