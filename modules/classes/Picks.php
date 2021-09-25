@@ -36,7 +36,7 @@ class Picks implements Iterator{
           T2.team_id=events.team_two_id
       WHERE week = ?',
       'i',
-      [$this->week] // IF(start_date > (SELECT UNIX_TIMESTAMP()), False, True) as locked
+      [$this->week]
     );
     $this->events = array_manipulate(function($k, $v){  // Modifies array to ensure all games are keyed based off their entry_id.
       return array($v['event_id'] => $v);
@@ -96,6 +96,13 @@ class Picks implements Iterator{
 
   public function count_events() {
     return count($this->events);
+  }
+
+  public function contains_locked(){
+    foreach($this->events as $event){
+      if ($event['locked']) return true;
+    }
+    return false;
   }
 }
 

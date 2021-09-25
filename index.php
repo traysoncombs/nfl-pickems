@@ -6,6 +6,7 @@ require_once 'modules/classes/Picks.php';
 require_once 'modules/classes/Leaderboard.php';
 require_once 'modules/classes/UserPicks.php';
 require_once 'modules/db/update.php';
+require_once 'modules/classes/PickValidityCheck.php';
 
 /*spl_autoload_register(function ($class_name) {
   if (file_exists('modules/classes/' . $class_name . '.php')){
@@ -70,8 +71,14 @@ Route::add("/picks", function(){
 });
 
 Route::add("/picks", function(){ // need server side check to prevent locked entrties from being edited.
-  global $mysql;
+  global $mysql, $current_week;
   if(!isset($_POST['entries']) || !isset($_SESSION['loggedIn'])){
+    http_response_code(400);
+    return false;
+  }
+  $advanced_anticheat = new PickValidityCheck($current_week, $_POST);
+  if (!$advanced_anticheat->full_check()) {
+    http_response_code(400);
     return false;
   }
   $entries = $_POST['entries'];
@@ -106,11 +113,6 @@ Route::add('/register', function(){
   $latte->render('templates/register.latte');
 });
 
-Route::add('/', function(){
-  global $latte;
-  $latte->render('templates/register.latte');
-});
-
 Route::add('/register', function(){
     global $mysql, $latte;
     if (isset($_POST['username'], $_POST['password'])){
@@ -123,9 +125,10 @@ Route::add('/register', function(){
         [$_POST['username'], $password_hash]
       );
       if ($res != null) {
-        $latte->render('templates/index.latte', ['show_dialog' => true, 'msg' => 'Registration Error']);
+        $latte->render('templates/index.latte', ['show_dialog' => true, 'msg' => 'Registration Error', 'color' => 'alert']);
       } else {
-        $latte->render('templates/index.latte', ['show_dialog' => true, 'msg' => login() ? 'Registration Successful!' : 'Registration Error']);
+        $login_success = login();
+        $latte->render('templates/index.latte', ['show_dialog' => true, 'msg' => $login_success ? 'Registration Successful!' : 'Registration Error', 'color' => $login_success ? 'success' : 'alert']);
       }
       unset($_POST['username'], $_POST['password']);
     }

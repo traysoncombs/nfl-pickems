@@ -1,7 +1,7 @@
 {layout 'layout.latte'}
 {block header}
   <div n:if="isset($show_dialog)">
-    <div n:if="$show_dialog" class="callout success text-center" data-closable>
+    <div n:if="$show_dialog" class="callout {$color} text-center" data-closable>
       <h5>{$msg}</h5>
       <button class="close-button" aria-label="Dismiss alert" type="button" data-close>
         <span aria-hidden="true">&times;</span>

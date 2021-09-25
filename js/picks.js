@@ -2,7 +2,7 @@ function init_submit_button(){
   $("#submit_button").click(function(){
     var entries = []
     var return_all = false;
-    $(".entry").each(function(){
+    $(".entry:not(.locked)").each(function(){
       if (!$(this).find(".team_entry").attr("winner")){
         alert("Make sure all teams have been selected.");
         return_all = true;
@@ -25,7 +25,8 @@ function init_submit_button(){
       method: 'POST',
       data: {
         "entries": entries,
-        "week": urlParams.get('week')
+        "week": urlParams.get('week'),
+        "username": urlParams.get('username')
       },
       statusCode: {
         400: function(){
@@ -50,7 +51,7 @@ function init_submit_button(){
 }
 
 function init_selectors() {
-  $('.team-selector').click(function(clicked){
+  $('.team-selector:not(.locked)').click(function(clicked){
     $(this).parent().find('.team-selector').each(function(){
       if($(this)[0] == clicked.currentTarget && !$(this).attr('selected')) {
         $(this).attr('selected', '1');
