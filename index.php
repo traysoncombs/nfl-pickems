@@ -24,7 +24,7 @@ $latte->setTempDirectory('tmp');
 use Steampixel\Route;
 update_events();
 
-$current_week = (floor(((time() - 1631163600) / (60 * 60 * 24 * 7))) + 1);  // Subtracts the current time from the start of week 1, and divides it by the length of a week to find the current week.
+$current_week = (floor(((time() - 1630976401) / (60 * 60 * 24 * 7))) + 1);  // changed start of week to tuesday for leaderboard updates. Internally everything else is still from Thursday.
 Route::add('/', function(){
   global $latte, $current_week;
   $latte->render('templates/index.latte', ['loggedIn' => $_SESSION['loggedIn'] ?? false]);

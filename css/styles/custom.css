@@ -109,3 +109,11 @@ select:invalid {
   -ms-user-select: none;
   user-select: none;
 }
+
+.success {
+  background-color: #52c41a;
+}
+
+.alert {
+  background-color: #f5222d;
+}
