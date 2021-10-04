@@ -111,9 +111,9 @@ select:invalid {
 }
 
 .success {
-  background-color: #52c41a !important;
+  background-color: #95de64 !important;
 }
 
 .alert {
-  background-color: #f5222d !important;
+  background-color: #ff7875 !important;
 }
