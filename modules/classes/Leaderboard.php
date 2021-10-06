@@ -47,6 +47,15 @@ class Leaderboard {
       $largest = max(array_values($this->scores[$week]));
       $this->week_winners[$week] = array_search($largest, $this->scores[$week]);
     }
+    $this->order_usernames(); //Makes usernames appear in correct order on standings page.
+  }
+
+  public function order_usernames(){
+    $usernames = [];
+    foreach ($this->username as $user){
+      $usernames[$user] = $this->count_wins($user);
+    }
+    $this->usernames = array_keys(arsort($usernames));
   }
 
   public function get_usernames(){
