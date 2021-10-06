@@ -52,7 +52,7 @@ class Leaderboard {
 
   public function order_usernames(){
     $usernames = [];
-    foreach ($this->username as $user){
+    foreach ($this->usernames as $user){
       $usernames[$user] = $this->count_wins($user);
     }
     $this->usernames = array_keys(arsort($usernames));
