@@ -3,7 +3,7 @@
   {embed 'menu.latte', current_page: 'standings'}{/embed}
   <div class="grid-x align-center">
     <div style="margin-top: 8px;" class="cell large-5 medium-8 small-11 table-scroll">
-      <table style="border: 1.5px solid black;">
+      <table style="border: 1.5px solid black;" class="unstriped">
         <thead>
           <tr>
             <th>Name</th>
@@ -14,7 +14,7 @@
         </thead>
         <tbody>
           {var $current_user = $_SESSION['username'] ?? "none"}
-          <tr n:foreach="$leaderboard->get_usernames() as $username" n:class = "$current_user == $username ? dark-gray, unstriped">
+          <tr n:foreach="$leaderboard->get_usernames() as $username" n:class = "$current_user == $username ? success">
             <td>{$username}
               <span n:class="$leaderboard->get_money($username) >= 0 ? green : red">
                 {$leaderboard->get_money($username) >= 0 ? '+' : '-'}${$leaderboard->get_money($username) >= 0 ? $leaderboard->get_money($username) : $leaderboard->get_money($username)*-1}
