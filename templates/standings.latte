@@ -13,8 +13,8 @@
           </tr>
         </thead>
         <tbody>
-          {var $current_user = $_SESSION['username']}
-          <tr n:foreach="$leaderboard->get_usernames() as $username" style="{$current_user == $username ? 'background-color: green;' : ''}">
+          {var $current_user = $_SESSION['username'] ?? "none"}
+          <tr n:foreach="$leaderboard->get_usernames() as $username" n:class = "$current_user == $username ? dark-gray, unstriped">
             <td>{$username}
               <span n:class="$leaderboard->get_money($username) >= 0 ? green : red">
                 {$leaderboard->get_money($username) >= 0 ? '+' : '-'}${$leaderboard->get_money($username) >= 0 ? $leaderboard->get_money($username) : $leaderboard->get_money($username)*-1}
