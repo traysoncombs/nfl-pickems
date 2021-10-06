@@ -51,11 +51,12 @@ class Leaderboard {
   }
 
   public function order_usernames(){
-    $usernames = [];
+    $tmp_usernames = [];
     foreach ($this->usernames as $user){
-      $usernames[$user] = $this->count_wins($user);
+      $tmp_usernames[$user] = $this->count_wins($user);
     }
-    $this->usernames = array_keys(arsort($usernames));
+    var_dump($tmp_usernames);
+    $this->usernames = array_keys(arsort($tmp_usernames));
   }
 
   public function get_usernames(){
