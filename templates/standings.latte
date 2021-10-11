@@ -32,8 +32,8 @@
       </table>
       <nav aria-label="Pagination">
         <ul class="pagination text-center">
-          <li n:class="$leaderboard->page == 1 ? disabled ,pagination-previous">
-            {if $this->page == 1}
+          <li n:class="$leaderboard->page == 1 ? disabled, pagination-previous">
+            {if $leaderboard->page == 1}
               <a href="{$leaderboard->page - 1}">Previous</a>
             {else}
               Previous
