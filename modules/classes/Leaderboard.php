@@ -58,7 +58,7 @@ class Leaderboard {
     foreach ($this->usernames as $user){
       $tmp_usernames[$user] = $this->count_wins($user);
     }
-    arsort($tmp_usernames);
+    $res = arsort($tmp_usernames);
     $this->usernames = array_keys($tmp_usernames);
   }
 
