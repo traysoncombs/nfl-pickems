@@ -34,19 +34,19 @@
         <ul class="pagination text-center">
           <li n:class="$leaderboard->page == 1 ? disabled, pagination-previous">
             {if $leaderboard->page == 1}
-              <a href="{$leaderboard->page - 1}">Previous</a>
+              <a href="standings?page={$leaderboard->page - 1}">Previous</a>
             {else}
               Previous
             {/if}
           </li>
           <li n:foreach="range(1, ceil(count($leaderboard->weeks) / 2)) as $page" n:class="$page == $leaderboard->page ? current">
             {if $page != $leaderboard->page}
-              <a href="{$page}">{$page}</a>
+              <a href="standings?page={$page}">{$page}</a>
             {else}
               {$page}
             {/if}
           </li>
-          <li class="pagination-next"><a href="{$leaderboard->page + 1}" aria-label="Next page">Next</a></li>
+          <li class="pagination-next"><a href="standings?page={$leaderboard->page + 1}" aria-label="Next page">Next</a></li>
         </ul>
       </nav>
     </div>
