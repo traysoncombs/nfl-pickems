@@ -2,15 +2,17 @@
 require_once 'modules/utils/functions.php';
 
 class Leaderboard {
-  private $weeks = [];
+  public $weeks = [];
   private $scores = []; // Array Structure as follows: Array([week] => Array([username] => score, [username] => score))
   private $week_winners = [];
   private $usernames = [];
   private $current_week;
   private $mysql;
+  public $page;
   public function __construct($mysql, $current_week){
     $this->mysql = $mysql;
     $this->current_week = $current_week;
+    $this->page = $_GET['page'] ?? 1;
     $result = $mysql->query("SELECT
                               P.week, U.username, SUM(P.score) as total
                             FROM
@@ -47,6 +49,7 @@ class Leaderboard {
       $largest = max(array_values($this->scores[$week]));
       $this->week_winners[$week] = array_search($largest, $this->scores[$week]);
     }
+    rsort($this->weeks); // sort weeks descending
     $this->order_usernames(); //Makes usernames appear in correct order on standings page.
   }
 
@@ -64,7 +67,10 @@ class Leaderboard {
   }
 
   public function get_weeks(){
-    return $this->weeks;
+    $page = $this->page;
+    $start_index = $page == 1 ? 0 : (((count($this->weeks) + $page) * 2) % (count($this->weeks) + 1)); // May or may not work, ig we will see.
+    $end_index = ($start_index + 2) >= count($this->weeks) ?: count($this->weeks) - 1;
+    return array_slice($this->weeks, $start_index, $end_index);
   }
 
   public function get_score($username, $week) {

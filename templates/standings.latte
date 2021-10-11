@@ -19,7 +19,7 @@
               <span n:class="$leaderboard->get_money($username) >= 0 ? green : red">
                 {$leaderboard->get_money($username) >= 0 ? '+' : '-'}${$leaderboard->get_money($username) >= 0 ? $leaderboard->get_money($username) : $leaderboard->get_money($username)*-1}
               </span>
-            </td>
+            </td>1
             <td n:foreach="$leaderboard->get_weeks() as $week">
               <b n:tag-if="$leaderboard->get_winner($week) == $username">
                 {$leaderboard->get_score($username, $week)}
@@ -30,6 +30,25 @@
           </tr>
         </tbody>
       </table>
+      <nav aria-label="Pagination">
+        <ul class="pagination text-center">
+          <li n:class="$this->page == 1 ? disabled ,pagination-previous">
+            {if $this->page == 1}
+              <a href="{$this->page-1}">Previous</a>
+            {else}
+              Previous
+            {/if}
+          </li>
+          <li n:foreach="range(1, ceil(count($this->weeks) / 2)) as $page" n:class="$page == $this->page ? current">
+            {if $page != $this->page}
+              <a href="{$page}">{$page}</a>
+            {else}
+              {$page}
+            {/if}
+          </li>
+          <li class="pagination-next"><a href="{$page + 1}" aria-label="Next page">Next</a></li>
+        </ul>
+      </nav>
     </div>
   </div>
 {/block}
