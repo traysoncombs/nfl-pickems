@@ -69,7 +69,7 @@ class Leaderboard {
   public function get_weeks(){
     $page = $this->page;
     $start_index = $page == 1 ? 0 : (((count($this->weeks) + $page) * 2) % (count($this->weeks) + 1)); // May or may not work, ig we will see.
-    $end_index = ($start_index + 2) >= ($start_index + 2) ?: ($start_index + 1);
+    $end_index = ($start_index + 2) >= count($this->weeks) - 1 ? ($start_index + 1) : ($start_index + 2);
     var_dump($end_index);
     return array_slice($this->weeks, $start_index, $end_index);
   }
