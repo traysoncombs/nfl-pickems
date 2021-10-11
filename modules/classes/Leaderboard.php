@@ -49,7 +49,7 @@ class Leaderboard {
       $largest = max(array_values($this->scores[$week]));
       $this->week_winners[$week] = array_search($largest, $this->scores[$week]);
     }
-    rsort($this->weeks); // sort weeks descending
+    $res = rsort($this->weeks); // sort weeks descending
     $this->order_usernames(); //Makes usernames appear in correct order on standings page.
   }
 
@@ -70,7 +70,6 @@ class Leaderboard {
     $page = $this->page;
     $start_index = $page == 1 ? 0 : (((count($this->weeks) + $page) * 2) % (count($this->weeks) + 1)); // May or may not work, ig we will see.
     $end_index = ($start_index + 2) >= count($this->weeks) - 1 ? ($start_index + 1) : ($start_index + 2);
-    var_dump($end_index);
     return array_slice($this->weeks, $start_index, $end_index);
   }
 

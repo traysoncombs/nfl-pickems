@@ -33,7 +33,7 @@
       <nav aria-label="Pagination">
         <ul class="pagination text-center">
           <li n:class="$leaderboard->page == 1 ? disabled, pagination-previous">
-            {if $leaderboard->page == 1}
+            {if $leaderboard->page != 1}
               <a href="standings?page={$leaderboard->page - 1}">Previous</a>
             {else}
               Previous
@@ -46,7 +46,12 @@
               {$page}
             {/if}
           </li>
-          <li class="pagination-next"><a href="standings?page={$leaderboard->page + 1}" aria-label="Next page">Next</a></li>
+          <li n:class="$leaderboard->page == ceil(count($leaderboard->weeks) / 2) ? disabled, pagination-next">
+            {if $leaderboard->page == ceil(count($leaderboard->weeks) / 2)}
+              <a href="standings?page={$leaderboard->page + 1}" aria-label="Next page">Next</a>
+            {else}
+              Next
+          </li>
         </ul>
       </nav>
     </div>
