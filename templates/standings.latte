@@ -47,10 +47,11 @@
             {/if}
           </li>
           <li n:class="$leaderboard->page == ceil(count($leaderboard->weeks) / 2) ? disabled, pagination-next">
-            {if $leaderboard->page == ceil(count($leaderboard->weeks) / 2)}
+            {if $leaderboard->page != ceil(count($leaderboard->weeks) / 2)}
               <a href="standings?page={$leaderboard->page + 1}" aria-label="Next page">Next</a>
             {else}
               Next
+            {/if}
           </li>
         </ul>
       </nav>
