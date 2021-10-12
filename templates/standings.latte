@@ -2,7 +2,7 @@
 {block content}
   {embed 'menu.latte', current_page: 'standings'}{/embed}
   <div class="grid-x align-center">
-    <div style="margin-top: 8px;" class="cell large-5 medium-8 small-11 table-scroll">
+    <div style="margin-top: 8px;" class="cell large-5 medium-8 small-11 table-scroll grid-x align-center">
       <table style="border: 1.5px solid black;" class="unstriped">
         <thead>
           <tr>
@@ -14,12 +14,12 @@
         </thead>
         <tbody>
           {var $current_user = $_SESSION['username'] ?? "none"}
-          <tr n:foreach="$leaderboard->get_usernames() as $username" n:class = "$current_user == $username ? success">
+          <tr n:foreach="$leaderboard->get_usernames() as $username" n:class="$current_user == $username ? success">
             <td>{$username}
               <span n:class="$leaderboard->get_money($username) >= 0 ? green : red">
                 {$leaderboard->get_money($username) >= 0 ? '+' : '-'}${$leaderboard->get_money($username) >= 0 ? $leaderboard->get_money($username) : $leaderboard->get_money($username)*-1}
               </span>
-            </td>1
+            </td>
             <td n:foreach="$leaderboard->get_weeks() as $week">
               <b n:tag-if="$leaderboard->get_winner($week) == $username">
                 {$leaderboard->get_score($username, $week)}
@@ -29,32 +29,38 @@
             <td>{$leaderboard->count_wins($username)}</td>
           </tr>
         </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="5">
+              <nav aria-label="Pagination">
+                <ul class="pagination text-center" style="margin-bottom:0px;">
+                  <li n:class="$leaderboard->page == 1 ? disabled, pagination-previous">
+                    {if $leaderboard->page != 1}
+                      <a href="standings?page={$leaderboard->page - 1}">Previous</a>
+                    {else}
+                      Previous
+                    {/if}
+                  </li>
+                  <li n:foreach="range(1, ceil(count($leaderboard->weeks) / 2)) as $page" n:class="$page == $leaderboard->page ? current">
+                    {if $page != $leaderboard->page}
+                      <a href="standings?page={$page}">{$page}</a>
+                    {else}
+                      {$page}
+                    {/if}
+                  </li>
+                  <li n:class="$leaderboard->page == ceil(count($leaderboard->weeks) / 2) ? disabled, pagination-next">
+                    {if $leaderboard->page != ceil(count($leaderboard->weeks) / 2)}
+                      <a href="standings?page={$leaderboard->page + 1}" aria-label="Next page">Next</a>
+                    {else}
+                      Next
+                    {/if}
+                  </li>
+                </ul>
+              </nav>
+            </td>
+          </tr>
+        </tfoot>
       </table>
-      <nav aria-label="Pagination">
-        <ul class="pagination text-center">
-          <li n:class="$leaderboard->page == 1 ? disabled, pagination-previous">
-            {if $leaderboard->page != 1}
-              <a href="standings?page={$leaderboard->page - 1}">Previous</a>
-            {else}
-              Previous
-            {/if}
-          </li>
-          <li n:foreach="range(1, ceil(count($leaderboard->weeks) / 2)) as $page" n:class="$page == $leaderboard->page ? current">
-            {if $page != $leaderboard->page}
-              <a href="standings?page={$page}">{$page}</a>
-            {else}
-              {$page}
-            {/if}
-          </li>
-          <li n:class="$leaderboard->page == ceil(count($leaderboard->weeks) / 2) ? disabled, pagination-next">
-            {if $leaderboard->page != ceil(count($leaderboard->weeks) / 2)}
-              <a href="standings?page={$leaderboard->page + 1}" aria-label="Next page">Next</a>
-            {else}
-              Next
-            {/if}
-          </li>
-        </ul>
-      </nav>
     </div>
   </div>
 {/block}
