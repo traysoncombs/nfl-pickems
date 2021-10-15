@@ -98,8 +98,8 @@ function create_sortable(swap, events){
       return evt.related.className.indexOf('locked') === -1;
     };
     options.onEnd = function (evt){
-      evt.item.children[2].children[0].innerText = ( ( evt.newIndex + 1 ) * 16 ) % 17;
-      evt.swapItem.children[2].children[0].innerText = ((evt.oldIndex+1)*16)%17;
+      evt.item.children[2].children[0].innerText = getIndex(evt.newIndex);
+      evt.swapItem.children[2].children[0].innerText = getIndex(evt.oldIndex);
     };
   }
   else {

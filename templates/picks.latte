@@ -64,7 +64,7 @@
           </div>
         </div>
         <div class="cell grid-x shrink auto align-middle">
-          <p class="confidence spaced-p cell auto shrink">{$pick['confidence']?? ($iterator->counter*16)%17}</p>
+          <p class="confidence spaced-p cell auto shrink">{$pick['confidence']?? ($iterator->counter * $picks->count_events()) % ($picks->count_events() + 1)}</p>
           <p n:if="$picks->logged_in && !$pick['locked']" class="spaced-p cell auto shrink material-icons handle grabby-hover">open_with</p>
         </div>
       </div>
