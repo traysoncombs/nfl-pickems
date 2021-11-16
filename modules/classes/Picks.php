@@ -34,7 +34,9 @@ class Picks implements Iterator{
           T1.team_id=events.team_one_id
       INNER JOIN teams as T2 ON
           T2.team_id=events.team_two_id
-      WHERE week = ?',
+      WHERE week = ?
+      ORDER BY 
+        start_date DESC',
       'i',
       [$this->week]
     );
