@@ -76,7 +76,7 @@ class Picks implements Iterator{
           $tmp_pick['winner_id'] = -1;
           $tmp_pick['completed'] = 1;
           $tmp_pick['correct'] = 0;
-          $this->picks[($conf_counter - 1) + (array_count_values($this->picks) - 1)] = $tmp_pick;
+          $this->picks[($conf_counter - 1) + (count($this->picks) - 1)] = $tmp_pick;
           $conf_counter++;
           var_dump($tmp_pick);
           var_dump($this->picks);
