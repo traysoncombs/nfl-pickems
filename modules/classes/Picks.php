@@ -65,11 +65,8 @@ class Picks implements Iterator{
     if($entries_result && $entries_result->num_rows >= 1){  // Executed if user has already selected picks
       $this->picks = $entries_result->fetch_all(MYSQLI_ASSOC);
       $conf_counter = 1;
-      var_dump($this->events);
-      var_dump(array_column($this->picks, 'event'));
       $event_ids = array_column($this->picks, 'event');
       foreach (array_reverse($this->events, 1) as $key => $event) {
-        var_dump($key);
         if (!in_array($key, $event_ids)) { // check if event id exists in the picks
           $tmp_pick = array();
           $tmp_pick['entry'] = -1;
@@ -78,10 +75,8 @@ class Picks implements Iterator{
           $tmp_pick['winner_id'] = -1;
           $tmp_pick['completed'] = 1;
           $tmp_pick['correct'] = 0;
-          $this->picks[(count($this->events) - 1) - ($conf_counter - 1)] = $tmp_pick;
+          $this->picks[(count($this->events) - 1) - ($conf_counter - 1)] = $tmp_pick; // add picks to array in a way that ensures it is still sorted by confidence
           $conf_counter++;
-          var_dump($tmp_pick);
-          var_dump($this->picks);
         }
       }
       $this->editing = true;
