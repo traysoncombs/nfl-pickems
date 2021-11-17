@@ -68,7 +68,7 @@ class Picks implements Iterator{
       var_dump($this->events);
       var_dump(array_column($this->picks, 'event'));
       foreach (array_reverse($this->events, 1) as $key => $event) {
-        if (!array_key_exists($key, array_column($this->picks['event']))) { // check if event id exists in the picks
+        if (!in_array($key, array_column($this->picks['event']))) { // check if event id exists in the picks
           $tmp_pick = array();
           $tmp_pick['entry'] = -1;
           $tmp_pick['event'] = $key;
@@ -76,7 +76,7 @@ class Picks implements Iterator{
           $tmp_pick['winner_id'] = -1;
           $tmp_pick['completed'] = 1;
           $tmp_pick['correct'] = 0;
-          $this->picks[($conf_counter - 1) + (count($this->picks) - 1)] = $tmp_pick;
+          $this->picks[(count($this->picks) - 1) - ($conf_counter - 1)] = $tmp_pick;
           $conf_counter++;
           var_dump($tmp_pick);
           var_dump($this->picks);
