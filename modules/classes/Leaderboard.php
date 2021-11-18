@@ -6,7 +6,7 @@ class Leaderboard {
   private $scores = []; // Array Structure as follows: Array([week] => Array([username] => score, [username] => score))
   private $week_winners = [];
   private $usernames = [];
-  private $current_week;
+  public $current_week;
   private $mysql;
   public $page;
   public function __construct($mysql, $current_week){
@@ -79,8 +79,8 @@ class Leaderboard {
     return $this->scores[$week][$username];
   }
 
-  public function get_possible($username, $week) {
-    return $this->possible_points[$week][$username];
+  public function get_possible($username) {
+    return $this->possible_points[$username];
   }
 
   public function get_winner($week) {
@@ -121,18 +121,18 @@ class Leaderboard {
 
   private function find_remaining_points() {
     $result = $this->mysql->query("SELECT
-                    U.week,
                     (SELECT username FROM users WHERE user_id = U.user_id) as username,
                     (SUM(IF(E.completed = 0 AND NOT EXISTS(SELECT * FROM point_additives P WHERE P.entry_id= U.entry_id), U.confidence, 0))) as total
-                  FROM 
+                  FROM
                     user_entries U
                   INNER JOIN events E
                   ON E.event_id = U.event_id
-                  GROUP BY U.week, U.user_id");
+                  WHERE U.week = {$this->current_week}
+                  GROUP BY U.user_id");
     if ($result) {
       $rows = $result->fetch_all(MYSQLI_ASSOC);
       foreach ($rows as $row) {
-        $this->possible_points[$row['week']][$row['username']] = $row['total'];
+        $this->possible_points[$row['username']] = $row['total'];
       }
     }
   }

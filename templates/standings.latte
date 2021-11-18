@@ -23,6 +23,9 @@
             <td n:foreach="$leaderboard->get_weeks() as $week">
               <b n:tag-if="$leaderboard->get_winner($week) == $username">
                 {$leaderboard->get_score($username, $week)}
+                {if $week == $leaderboard->current_week}
+                  / {$leaderboard->get_possible($username)}
+                {/if}
               </b>
             </td>
             <td>{$leaderboard->sum_score($username)}</td>
