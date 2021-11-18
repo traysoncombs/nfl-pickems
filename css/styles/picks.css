@@ -3,35 +3,35 @@
     font-size: clamp(0.8rem, 0.3rem + 1.6vw, 1.2rem) !important;
   }
 
-  .spaced-p {
+.spaced-p {
     margin:0px 4px 0px 4px;
     display:inline-block;
-  }
+}
 
-  sub {
+sub {
     margin:0px;
     display:inline-block;
-  }
+}
 
-  .ghost {
+.ghost {
     opacity: .5;
     background: #C8EBFB;
-  }
+}
 
-  .bordered {
+.bordered {
     border: 2px solid black;  
     padding-top: 0px; 
     padding-bottom:0px;
-  }
+}
 
-  .team-selector {
+.team-selector {
     height: 100%; 
     padding: 2vh 2vw 2vh 2vw;
-  }
+}
 
-  .heading {
+.heading {
     padding: 0.5vh 1vw 1vh 0.5vw; 
     border: 2px solid black; 
     border-radius: 9px 9px 0px 0px; 
     margin-bottom:9px;
-  }
+}

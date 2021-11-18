@@ -13,6 +13,7 @@ class Leaderboard {
     $this->mysql = $mysql;
     $this->current_week = $current_week;
     $this->page = $_GET['page'] ?? 1;
+    $this->possible_points = array();
     $result = $mysql->query("SELECT
                               P.week, U.username, SUM(P.score) as total
                             FROM
@@ -24,7 +25,7 @@ class Leaderboard {
                             ORDER BY
                               P.week;
                           ");
-    if ($result){
+    if ($result) {
       $rows = $result->fetch_all(MYSQLI_ASSOC);
       foreach ($rows as $row) {
         $week = $row['week'];
@@ -36,7 +37,7 @@ class Leaderboard {
       }
     }
 
-    foreach($this->weeks as $week){
+    foreach($this->weeks as $week) {
       if ($week == $this->current_week) continue;
       if (count(array_keys($this->scores[$week]), max($this->scores[$week]))) { // This entire block is for tie checking, this part specifically checks if their are two of the max scores for the week
         if (array_count_values($this->scores[$week])[max($this->scores[$week])] > 1){
@@ -51,9 +52,10 @@ class Leaderboard {
     }
     $res = rsort($this->weeks); // sort weeks descending
     $this->order_usernames(); //Makes usernames appear in correct order on standings page.
+    $this->find_remaining_points();
   }
 
-  public function order_usernames(){
+  public function order_usernames() {
     $tmp_usernames = [];
     foreach ($this->usernames as $user){
       $tmp_usernames[$user] = $this->count_wins($user);
@@ -62,11 +64,11 @@ class Leaderboard {
     $this->usernames = array_keys($tmp_usernames);
   }
 
-  public function get_usernames(){
+  public function get_usernames() {
     return $this->usernames;
   }
 
-  public function get_weeks(){
+  public function get_weeks() {
     $page = $this->page;
     $start_index = $page == 1 ? 0 : (((count($this->weeks) + $page) * 2) % (count($this->weeks) + 1)); // May or may not work, ig we will see.
     $end_index = ($start_index + 2) > count($this->weeks) ? 1 : 2;
@@ -77,11 +79,15 @@ class Leaderboard {
     return $this->scores[$week][$username];
   }
 
+  public function get_possible($username, $week) {
+    return $this->possible_points[$week][$username];
+  }
+
   public function get_winner($week) {
     return $this->week_winners[$week] ?? null;
   }
 
-  public function sum_score($username){
+  public function sum_score($username) {
     $sum = 0;
     foreach ($this->weeks as $week) {
       $sum += $this->scores[$week][$username];
@@ -89,11 +95,11 @@ class Leaderboard {
     return $sum;
   }
 
-  public function count_wins($username){
+  public function count_wins($username) {
     return array_count_values($this->week_winners)[$username] ?? 0;
   }
 
-  public function get_money($username){
+  public function get_money($username) {
     $won = $this->count_wins($username);
     $lost = ($this->current_week - 1) - $won;
     return ($won*6) - ($lost*3);
@@ -111,6 +117,24 @@ class Leaderboard {
       $confs[$username] = $conf ?? 100; // If user has no wins for some reason obviously they do win so this is a hacky way of doing this.
     }
     return array_keys($confs, min($confs)); // Returns an array, may cause future issues
+  }
+
+  private function find_remaining_points() {
+    $result = $this->mysql->query("SELECT
+                    U.week,
+                    (SELECT username FROM users WHERE user_id = U.user_id) as username,
+                    (SUM(IF(E.completed = 0 AND NOT EXISTS(SELECT * FROM point_additives P WHERE P.entry_id= U.entry_id), U.confidence, 0))) as total
+                  FROM 
+                    user_entries U
+                  INNER JOIN events E
+                  ON E.event_id = U.event_id
+                  GROUP BY U.week, U.user_id");
+    if ($result) {
+      $rows = $result->fetch_all(MYSQLI_ASSOC);
+      foreach ($rows as $row) {
+        $this->possible_points[$row['week']][$row['username']] = $row['total'];
+      }
+    }
   }
 }
 
