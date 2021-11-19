@@ -27,9 +27,11 @@
   <div n:if="$weeks" style="margin-top:8px;" class="grid-x align-spaced">
     <div n:foreach="$weeks as $week" class='cell grid-margin-x large-2 medium-3 small-5 '>
       <div class='card text-center'>
-        <div n:class="$weeks->is_unpicked() ? red, card-divider, align-center">
+        <div n:class="$weeks->current_week == $week ? green, $weeks->is_unpicked() ? red, card-divider, align-center">
           {if $weeks->is_unpicked()}
             Week {$week} - Unpicked
+          {elseif $weeks->current_week == $week}
+            Week {$week} - Current Week
           {else}
             Week {$week} picks
           {/if}

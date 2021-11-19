@@ -7,10 +7,12 @@ class UserPicks implements Iterator {
   public $logged_in;
   public $unpicked_weeks = array();
   public $weeks;
+  public $current_week;
   private $mysql;
 
   public function __construct($mysql, $username, $current_week){
     $this->username = $username;
+    $this->current_week = $current_week;
     $this->logged_in = ($username == ($_SESSION['username'] ?? null));
     $this->mysql = $mysql;
     $result = prepared_statement(

@@ -7,6 +7,7 @@ class Stats {
     public function __construct($current_week, $mysql) {
         $this->current_week = $current_week;
         $this->mysql = $mysql;
+        $this->wins_vs_losses();
     }
 
     private function wins_vs_losses() {
@@ -26,5 +27,7 @@ class Stats {
             $this->stats[$row['username']]['total_losses'] = $row['total_losses'];
         }
     }
+
+    
 }
 ?>
