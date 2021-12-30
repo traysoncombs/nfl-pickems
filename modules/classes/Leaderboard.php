@@ -6,6 +6,7 @@ class Leaderboard {
   private $scores = []; // Array Structure as follows: Array([week] => Array([username] => score, [username] => score))
   private $week_winners = [];
   private $usernames = [];
+  public $total_points = [];
   public $current_week;
   private $mysql;
   public $page;
@@ -53,6 +54,14 @@ class Leaderboard {
     $res = rsort($this->weeks); // sort weeks descending
     $this->order_usernames(); //Makes usernames appear in correct order on standings page.
     $this->find_remaining_points();
+
+    $result = $this->mysql->query("SELECT username, SUM(confidence) as total FROM stats GROUP BY username");
+    if ($result) {
+      $rows = $result->fetch_all(MYSQLI_ASSOC);
+      foreach($rows as $row) {
+        $this->total_points[$row['username']] = $row['total'];
+      }
+    }
   }
 
   public function order_usernames() {
@@ -76,7 +85,7 @@ class Leaderboard {
   }
 
   public function get_score($username, $week) {
-    return $this->scores[$week][$username];
+    return $this->scores[$week][$username] ?? 0; // little fix becuase my system is kind of ass, if someone doesn't fill out a week they won't exist here so this is just a little bandaid to superficially fix the issue lol
   }
 
   public function get_possible($username) {
@@ -90,7 +99,7 @@ class Leaderboard {
   public function sum_score($username) {
     $sum = 0;
     foreach ($this->weeks as $week) {
-      $sum += $this->scores[$week][$username];
+      $sum += $this->scores[$week][$username] ?? 0;
     }
     return $sum;
   }

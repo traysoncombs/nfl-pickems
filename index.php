@@ -7,6 +7,7 @@ require_once 'modules/classes/Leaderboard.php';
 require_once 'modules/classes/UserPicks.php';
 require_once 'modules/db/update.php';
 require_once 'modules/classes/PickValidityCheck.php';
+require_once 'modules/classes/Stats.php';
 
 /*spl_autoload_register(function ($class_name) {
   if (file_exists('modules/classes/' . $class_name . '.php')){
@@ -55,7 +56,8 @@ Route::add('/standings', function(){
   global $latte, $mysql, $current_week;
   $leaderboard = new Leaderboard($mysql, $current_week);
   $params = [
-    'leaderboard' => $leaderboard
+    'leaderboard' => $leaderboard,
+    'stats' => new Stats($current_week, $mysql)
   ];
   $latte->render('templates/standings.latte', $params);
 });

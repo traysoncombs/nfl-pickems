@@ -28,7 +28,7 @@
                 {/if}
               </b>
             </td>
-            <td>{$leaderboard->sum_score($username)}</td>
+            <td>{$leaderboard->sum_score($username)} / {$leaderboard->total_points[$username]}</td>
             <td>{$leaderboard->count_wins($username)}</td>
           </tr>
         </tbody>
@@ -63,6 +63,29 @@
             </td>
           </tr>
         </tfoot>
+      </table>
+    </div>
+  </div>
+  <div class="grid-x align-center">
+    <div style="margin-top: 8px;" class="cell large-5 medium-8 small-11 table-scroll grid-x align-center">
+      <table style="border: 1.5px solid black;" class="unstriped">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Total Wins</th>
+            <th>Win Percentage</th>
+            <th>Average Points</th>
+          </tr>
+        </thead>
+        <tbody>
+          {var $users = array_keys($stats->stats)}
+          <tr n:foreach="$users as $user">
+            <td>{$user}</td>
+            <td>{$stats->stats[$user]['total_wins']}</td>
+            <td>{round($stats->win_percentage($user), 2)}%</td>
+            <td>{round($stats->average_point_score($user), 2)}</td>
+          </tr>
+        </tbody>
       </table>
     </div>
   </div>
