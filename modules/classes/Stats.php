@@ -54,29 +54,6 @@ class Stats {
       return ($this->stats[$username]['total_wins'] / ($this->stats[$username]['total_wins'] + $this->stats[$username]['total_losses'])) * 100;
     }
 
-    /*function average_point_score_week($username, $week){
-      $week_data = $this->stats[$username]['weeks'][$week];
-      $total_points = 0;
-      $count = 0;
-      foreach($week_data as $entry) {
-        if ($entry['correct'] == "1") {
-          $count += 1;
-          $total_points += $entry['confidence'];
-        }
-      }
-      return $total_points / $count;
-    }
-
-    function average_point_score($username) {
-      $weeks = array_keys($this->stats[$username]['weeks']);
-      $avg = 0;
-      $total = count($weeks);
-      foreach($weeks as $week) {
-        $avg += $this->average_point_score_week($username, $week);
-      }
-      return $avg / $total;
-    }*/
-
     function average_point_score($username) {
       $weeks = array_keys($this->stats[$username]['weeks']);
       $total = count($weeks);
